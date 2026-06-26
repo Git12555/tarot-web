@@ -1,0 +1,2 @@
+# tarot-web
+AIDesign
