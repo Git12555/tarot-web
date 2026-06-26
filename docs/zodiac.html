@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星座运势 - 天机阁</title>
+    <meta name="description" content="追随星辰的轨迹，解读爱情事业与生活指引">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <style>
+:root {
+  --color-primary: #C9A96E;
+  --color-primary-light: #E2CFA0;
+  --color-primary-dark: #A68B4B;
+  --bg-primary: #0D0D14;
+  --bg-secondary: #161622;
+  --bg-tertiary: #1E1E2E;
+  --bg-elevated: #252538;
+  --text-primary: #F5F0E8;
+  --text-secondary: #B8B0A0;
+  --text-tertiary: #8A8278;
+  --text-accent: #C9A96E;
+  --border-default: rgba(201, 169, 110, 0.15);
+  --border-hover: rgba(201, 169, 110, 0.3);
+  --shadow-glow: 0 0 20px rgba(201, 169, 110, 0.15);
+  --font-display: 'Playfair Display', 'Noto Serif SC', 'Georgia', serif;
+  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+.font-display { font-family: var(--font-display); }
+.font-body { font-family: var(--font-body); }
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-400), var(--color-primary-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.glass-panel {
+  background: rgba(26, 26, 42, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.mystical-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary-400), transparent);
+  opacity: 0.3;
+}
+html { scroll-behavior: smooth; }
+.fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(90deg, var(--color-primary-200), var(--color-primary-400), var(--color-primary-200));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary-400), transparent);
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after, .nav-link.active::after { width: 100%; }
+.particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.particle { position: absolute; width: 4px; height: 4px; background: rgba(201, 169, 110, 0.4); border-radius: 50%; animation: particleFloat 8s infinite ease-in-out; }
+@keyframes particleFloat {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.float-animation { animation: float 3s ease-in-out infinite; }
+.zodiac-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.zodiac-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(201, 169, 110, 0.2);
+  border-color: rgba(201, 169, 110, 0.5) !important;
+}
+.zodiac-card.active {
+  border-color: rgba(201, 169, 110, 0.8) !important;
+  box-shadow: 0 0 30px rgba(201, 169, 110, 0.3);
+  background: linear-gradient(145deg, rgba(40, 40, 60, 0.9), rgba(30, 30, 50, 0.9)) !important;
+}
+.zodiac-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+.luck-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.luck-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+  background: linear-gradient(90deg, #C9A96E, #E2CFA0);
+  box-shadow: 0 0 10px rgba(201, 169, 110, 0.5);
+}
+.luck-bar-fill.love { background: linear-gradient(90deg, #F472B6, #EC4899); box-shadow: 0 0 10px rgba(244, 114, 182, 0.5); }
+.luck-bar-fill.career { background: linear-gradient(90deg, #60A5FA, #3B82F6); box-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+.luck-bar-fill.wealth { background: linear-gradient(90deg, #FBBF24, #F59E0B); box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+.luck-bar-fill.health { background: linear-gradient(90deg, #34D399, #10B981); box-shadow: 0 0 10px rgba(52, 211, 153, 0.5); }
+.result-fade { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.result-fade.show { opacity: 1; transform: translateY(0); }
+.tab-btn {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.tab-btn.active {
+  color: #C9A96E !important;
+  border-color: #C9A96E !important;
+  background: rgba(201, 169, 110, 0.1);
+}
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen font-sans antialiased" style="background: #0D0D14; color: #F5F0E8;">
+
+<header id="main-header" class="fixed top-0 left-0 right-0 z-[200] border-b transition-all duration-300" style="background: rgba(13, 13, 20, 0.6); backdrop-filter: blur(12px); border-color: transparent;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <a href="index.html" class="flex items-center gap-2 no-underline" style="text-decoration: none;">
+      <span class="font-display text-xl tracking-wide" style="font-family: 'Playfair Display', serif; color: #C9A96E; letter-spacing: 0.05em;">天机阁</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8">
+      <a href="index.html" class="nav-link text-sm font-medium transition-colors duration-250" style="color: #B8B0A0; text-decoration: none;">首页</a>
+      <a href="bazi.html" class="nav-link text-sm font-medium transition-colors duration-250" style="color: #B8B0A0; text-decoration: none;">八字测算</a>
+      <a href="zodiac.html" class="nav-link text-sm font-medium transition-colors duration-250 active" style="color: #C9A96E; text-decoration: none;">星座运势</a>
+      <a href="tarot.html" class="nav-link text-sm font-medium transition-colors duration-250" style="color: #B8B0A0; text-decoration: none;">塔罗占卜</a>
+    </nav>
+    <button id="mobile-menu-btn" class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5" style="background: none; border: none; cursor: pointer;">
+      <span class="block w-5 h-0.5 transition-all duration-300" style="background: #C9A96E;"></span>
+      <span class="block w-5 h-0.5 transition-all duration-300" style="background: #C9A96E;"></span>
+      <span class="block w-5 h-0.5 transition-all duration-300" style="background: #C9A96E;"></span>
+    </button>
+  </div>
+  <nav id="mobile-nav" class="md:hidden overflow-hidden" style="max-height: 0; transition: max-height 400ms ease;">
+    <div class="px-6 pb-4 flex flex-col gap-3">
+      <a href="index.html" class="text-sm font-medium py-2" style="color: #B8B0A0; text-decoration: none;">首页</a>
+      <a href="bazi.html" class="text-sm font-medium py-2" style="color: #B8B0A0; text-decoration: none;">八字测算</a>
+      <a href="zodiac.html" class="text-sm font-medium py-2" style="color: #C9A96E; text-decoration: none;">星座运势</a>
+      <a href="tarot.html" class="text-sm font-medium py-2" style="color: #B8B0A0; text-decoration: none;">塔罗占卜</a>
+    </div>
+  </nav>
+</header>
+
+<main class="pt-16 min-h-screen">
+  <section class="relative w-full py-20 sm:py-28 flex items-center justify-center overflow-hidden" style="background: #0D0D14;">
+    <div class="particles" id="particles"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full" style="background: radial-gradient(circle, rgba(201, 169, 110, 0.08) 0%, transparent 70%);"></div>
+    <div class="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
+      <h1 class="shimmer-text font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-6" style="font-family: 'Playfair Display', serif;">
+        星座运势
+      </h1>
+      <p class="text-base sm:text-lg leading-relaxed mb-8 max-w-2xl mx-auto" style="color: #B8B0A0;">
+        追随星辰的轨迹，解读爱情事业与生活指引
+      </p>
+      <div class="mystical-divider mx-auto" style="max-width: 120px; height: 1px; background: linear-gradient(90deg, transparent, #C9A96E, transparent); opacity: 0.5;"></div>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
+    <h2 class="text-gradient-gold font-display text-2xl sm:text-3xl font-semibold text-center mb-10" style="font-family: 'Playfair Display', serif;">选择您的星座</h2>
+    
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 sm:gap-4 mb-12" id="zodiac-grid">
+    </div>
+
+    <div id="zodiac-result" class="result-fade" style="display: none;">
+      <div class="glass-panel rounded-2xl p-6 sm:p-10 mb-8" style="border: 1px solid rgba(201, 169, 110, 0.25);">
+        <div class="flex flex-col sm:flex-row items-center gap-6 mb-8">
+          <div class="zodiac-icon float-animation" id="result-icon">♈</div>
+          <div class="text-center sm:text-left">
+            <h3 class="text-3xl font-bold mb-2" style="color: #E2CFA0; font-family: 'Noto Serif SC', serif;" id="result-name">白羊座</h3>
+            <p class="text-sm" style="color: #B8B0A0;" id="result-date">3月21日 - 4月19日</p>
+            <p class="text-sm mt-1" style="color: #8A8278;" id="result-element">火象星座 · 守护星：火星</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-2 mb-8">
+          <button class="tab-btn active px-4 py-2 rounded-full text-sm border" style="border-color: rgba(201, 169, 110, 0.3); color: #B8B0A0;" onclick="switchTab('today', this)">今日运势</button>
+          <button class="tab-btn px-4 py-2 rounded-full text-sm border" style="border-color: rgba(201, 169, 110, 0.2); color: #8A8278;" onclick="switchTab('week', this)">本周运势</button>
+          <button class="tab-btn px-4 py-2 rounded-full text-sm border" style="border-color: rgba(201, 169, 110, 0.2); color: #8A8278;" onclick="switchTab('month', this)">本月运势</button>
+        </div>
+
+        <div id="tab-content">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            <div class="text-center">
+              <div class="text-xs mb-2" style="color: #8A8278;">综合运势</div>
+              <div class="text-2xl font-bold mb-2" style="color: #C9A96E;" id="overall-score">85%</div>
+              <div class="luck-bar"><div class="luck-bar-fill" id="overall-bar" style="width: 85%;"></div></div>
+            </div>
+            <div class="text-center">
+              <div class="text-xs mb-2" style="color: #8A8278;">爱情运势</div>
+              <div class="text-2xl font-bold mb-2" style="color: #EC4899;" id="love-score">78%</div>
+              <div class="luck-bar"><div class="luck-bar-fill love" id="love-bar" style="width: 78%;"></div></div>
+            </div>
+            <div class="text-center">
+              <div class="text-xs mb-2" style="color: #8A8278;">事业运势</div>
+              <div class="text-2xl font-bold mb-2" style="color: #3B82F6;" id="career-score">82%</div>
+              <div class="luck-bar"><div class="luck-bar-fill career" id="career-bar" style="width: 82%;"></div></div>
+            </div>
+            <div class="text-center">
+              <div class="text-xs mb-2" style="color: #8A8278;">财运指数</div>
+              <div class="text-2xl font-bold mb-2" style="color: #F59E0B;" id="wealth-score">70%</div>
+              <div class="luck-bar"><div class="luck-bar-fill wealth" id="wealth-bar" style="width: 70%;"></div></div>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div>
+              <h4 class="text-sm font-semibold mb-2" style="color: #C9A96E;">🌟 今日概述</h4>
+              <p class="text-sm leading-relaxed" style="color: #B8B0A0;" id="daily-overview">今天整体运势不错，精力充沛，适合开展新的计划和项目。</p>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold mb-2" style="color: #EC4899;">💕 爱情运势</h4>
+              <p class="text-sm leading-relaxed" style="color: #B8B0A0;" id="love-reading">单身者有机会遇到心仪的对象，有伴者感情甜蜜温馨。</p>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold mb-2" style="color: #3B82F6;">💼 事业学业</h4>
+              <p class="text-sm leading-relaxed" style="color: #B8B0A0;" id="career-reading">工作上表现出色，容易得到上司的赏识和同事的认可。</p>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold mb-2" style="color: #F59E0B;">💰 财运指数</h4>
+              <p class="text-sm leading-relaxed" style="color: #B8B0A0;" id="wealth-reading">财运平稳，适合做长期投资规划，避免冲动消费。</p>
+            </div>
+            <div>
+              <h4 class="text-sm font-semibold mb-2" style="color: #10B981;">🍀 幸运提示</h4>
+              <div class="flex flex-wrap gap-3">
+                <span class="text-xs px-3 py-1 rounded-full" style="background: rgba(201, 169, 110, 0.1); color: #C9A96E; border: 1px solid rgba(201, 169, 110, 0.2);" id="lucky-color">幸运色：红色</span>
+                <span class="text-xs px-3 py-1 rounded-full" style="background: rgba(201, 169, 110, 0.1); color: #C9A96E; border: 1px solid rgba(201, 169, 110, 0.2);" id="lucky-number">幸运数字：9</span>
+                <span class="text-xs px-3 py-1 rounded-full" style="background: rgba(201, 169, 110, 0.1); color: #C9A96E; border: 1px solid rgba(201, 169, 110, 0.2);" id="lucky-direction">幸运方位：东方</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer style="background: #0D0D14; border-top: 1px solid rgba(201, 169, 110, 0.15);">
+  <div class="mystical-divider" style="height: 1px; background: linear-gradient(90deg, transparent, #C9A96E, transparent); opacity: 0.3;"></div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-xs" style="color: #8A8278;">&copy; 2026 天机阁 TianJiGe. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="text-xs" style="color: #8A8278; text-decoration: none;">首页</a>
+        <span style="color: rgba(201, 169, 110, 0.15);">|</span>
+        <a href="tarot.html" class="text-xs" style="color: #8A8278; text-decoration: none;">塔罗占卜</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const zodiacSigns = [
+  { name: '白羊座', icon: '♈', date: '3月21日 - 4月19日', element: '火象星座', ruler: '火星', luckyColor: '红色', luckyNumber: '9', luckyDirection: '东方' },
+  { name: '金牛座', icon: '♉', date: '4月20日 - 5月20日', element: '土象星座', ruler: '金星', luckyColor: '绿色', luckyNumber: '6', luckyDirection: '北方' },
+  { name: '双子座', icon: '♊', date: '5月21日 - 6月21日', element: '风象星座', ruler: '水星', luckyColor: '黄色', luckyNumber: '5', luckyDirection: '南方' },
+  { name: '巨蟹座', icon: '♋', date: '6月22日 - 7月22日', element: '水象星座', ruler: '月亮', luckyColor: '白色', luckyNumber: '2', luckyDirection: '西方' },
+  { name: '狮子座', icon: '♌', date: '7月23日 - 8月22日', element: '火象星座', ruler: '太阳', luckyColor: '金色', luckyNumber: '1', luckyDirection: '东方' },
+  { name: '处女座', icon: '♍', date: '8月23日 - 9月22日', element: '土象星座', ruler: '水星', luckyColor: '灰色', luckyNumber: '7', luckyDirection: '北方' },
+  { name: '天秤座', icon: '♎', date: '9月23日 - 10月23日', element: '风象星座', ruler: '金星', luckyColor: '粉色', luckyNumber: '3', luckyDirection: '南方' },
+  { name: '天蝎座', icon: '♏', date: '10月24日 - 11月22日', element: '水象星座', ruler: '冥王星', luckyColor: '黑色', luckyNumber: '8', luckyDirection: '西方' },
+  { name: '射手座', icon: '♐', date: '11月23日 - 12月21日', element: '火象星座', ruler: '木星', luckyColor: '紫色', luckyNumber: '4', luckyDirection: '东南' },
+  { name: '摩羯座', icon: '♑', date: '12月22日 - 1月19日', element: '土象星座', ruler: '土星', luckyColor: '棕色', luckyNumber: '0', luckyDirection: '西北' },
+  { name: '水瓶座', icon: '♒', date: '1月20日 - 2月18日', element: '风象星座', ruler: '天王星', luckyColor: '蓝色', luckyNumber: '11', luckyDirection: '东北' },
+  { name: '双鱼座', icon: '♓', date: '2月19日 - 3月20日', element: '水象星座', ruler: '海王星', luckyColor: '海蓝', luckyNumber: '12', luckyDirection: '西南' }
+];
+
+const zodiacReadings = {
+  today: {
+    overall: [
+      '今天整体运势不错，精力充沛，适合开展新的计划和项目。',
+      '今天运势平稳，按部就班地完成工作即可，不要急于求成。',
+      '今天运势极佳，诸事顺利，是推进重要事务的好日子。',
+      '今天需要保持耐心，一些事情可能需要更多时间来处理。',
+      '今天灵感迸发，创意十足，适合从事创造性工作。'
+    ],
+    love: [
+      '单身者有机会遇到心仪的对象，有伴者感情甜蜜温馨。',
+      '感情上需要多些沟通，避免因误会产生矛盾。',
+      '桃花运旺盛，魅力四射，容易吸引异性的目光。',
+      '感情进入平稳期，享受彼此陪伴的温馨时光。',
+      '可能会有浪漫的惊喜，保持开放的心态迎接美好。'
+    ],
+    career: [
+      '工作上表现出色，容易得到上司的赏识和同事的认可。',
+      '工作压力稍大，但凭借你的能力能够顺利应对。',
+      '团队合作运势佳，与同事配合默契，效率很高。',
+      '有新的工作机会出现，值得认真考虑和把握。',
+      '适合处理复杂的事务，你的分析能力将得到发挥。'
+    ],
+    wealth: [
+      '财运平稳，适合做长期投资规划，避免冲动消费。',
+      '有意外之财的可能，但也要注意理性理财。',
+      '财运上升，正财运不错，努力工作会有丰厚回报。',
+      '偏财运一般，不建议进行高风险投资。',
+      '可能会有额外的收入来源，注意把握机会。'
+    ]
+  },
+  week: {
+    overall: [
+      '本周整体运势向好，各方面都有不错的发展机会。',
+      '本周需要调整节奏，劳逸结合才能保持最佳状态。',
+      '本周贵人运旺盛，遇到困难时会有人伸出援手。',
+      '本周是积累实力的好时机，踏实做好每一件事。',
+      '本周变化较多，灵活应对才能把握主动权。'
+    ],
+    love: [
+      '感情稳步升温，有伴者可以计划一次浪漫的约会。',
+      '单身者社交运势不错，多参加聚会有机会脱单。',
+      '感情需要给彼此一些空间，过度黏人反而适得其反。',
+      '可能会遇到让你心动的人，勇敢表达自己的心意。',
+      '感情进入磨合期，相互理解和包容很重要。'
+    ],
+    career: [
+      '工作上会有新的挑战，这也是展示你能力的好机会。',
+      '团队项目进展顺利，你的贡献将得到认可。',
+      '适合学习新技能，为未来的发展打下基础。',
+      '可能会有工作调动或晋升的机会，好好把握。',
+      '注意与同事的沟通方式，避免产生不必要的误会。'
+    ],
+    wealth: [
+      '财运稳步上升，正财运旺盛，副业也有不错收入。',
+      '本周开销较大，需要做好预算规划。',
+      '有投资机会出现，但要谨慎评估风险。',
+      '财运一般，守财为上，不建议大额支出。',
+      '可能会收到欠款或分红，是收获的一周。'
+    ]
+  },
+  month: {
+    overall: [
+      '本月整体运势积极向上，是大展宏图的好时机。',
+      '本月需要稳扎稳打，打好基础才能走得更远。',
+      '本月人际关系运势佳，拓展人脉对你很有帮助。',
+      '本月运势起伏较大，保持平和的心态很重要。',
+      '本月是反思和调整的时期，为下一阶段做准备。'
+    ],
+    love: [
+      '感情运势旺盛，单身者有很大机会脱单。',
+      '有伴者感情升温，可以考虑更进一步的发展。',
+      '感情需要经营，多花时间陪伴对方。',
+      '可能会遇到感情的考验，坚持下去会有好结果。',
+      '感情运势平稳，享受平淡中的幸福。'
+    ],
+    career: [
+      '事业上会有重要的突破，之前的努力开始见效。',
+      '本月适合制定长远规划，明确未来的发展方向。',
+      '工作上会有贵人相助，把握机会更上一层楼。',
+      '可能会面临一些抉择，听从内心的声音。',
+      '事业运势上升，你的才华将得到充分展现。'
+    ],
+    wealth: [
+      '财运亨通，收入稳步增长，是理财的好时机。',
+      '本月支出较多，注意控制消费欲望。',
+      '有不错的投资机会，但要量力而行。',
+      '财运一般，保持现状即可，不宜冒进。',
+      '可能会有意外的收入，让你惊喜不已。'
+    ]
+  }
+};
+
+let currentZodiac = null;
+let currentTab = 'today';
+
+function initZodiacGrid() {
+  const grid = document.getElementById('zodiac-grid');
+  zodiacSigns.forEach((zodiac, index) => {
+    const card = document.createElement('div');
+    card.className = 'zodiac-card glass-panel rounded-xl p-4 text-center';
+    card.style.border = '1px solid rgba(201, 169, 110, 0.15)';
+    card.style.animationDelay = (index * 0.05) + 's';
+    card.onclick = () => selectZodiac(index);
+    
+    card.innerHTML = `
+      <div class="text-4xl mb-2">${zodiac.icon}</div>
+      <div class="text-sm font-medium" style="color: #E2CFA0; font-family: 'Noto Serif SC', serif;">${zodiac.name}</div>
+      <div class="text-xs mt-1" style="color: #8A8278;">${zodiac.date.split(' - ')[0]}</div>
+    `;
+    
+    grid.appendChild(card);
+  });
+}
+
+function selectZodiac(index) {
+  currentZodiac = zodiacSigns[index];
+  
+  document.querySelectorAll('.zodiac-card').forEach((card, i) => {
+    if (i === index) {
+      card.classList.add('active');
+    } else {
+      card.classList.remove('active');
+    }
+  });
+  
+  updateZodiacResult();
+  
+  const resultSection = document.getElementById('zodiac-result');
+  resultSection.style.display = 'block';
+  setTimeout(() => resultSection.classList.add('show'), 50);
+  resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateZodiacResult() {
+  if (!currentZodiac) return;
+  
+  document.getElementById('result-icon').textContent = currentZodiac.icon;
+  document.getElementById('result-name').textContent = currentZodiac.name;
+  document.getElementById('result-date').textContent = currentZodiac.date;
+  document.getElementById('result-element').textContent = `${currentZodiac.element} · 守护星：${currentZodiac.ruler}`;
+  
+  document.getElementById('lucky-color').textContent = `幸运色：${currentZodiac.luckyColor}`;
+  document.getElementById('lucky-number').textContent = `幸运数字：${currentZodiac.luckyNumber}`;
+  document.getElementById('lucky-direction').textContent = `幸运方位：${currentZodiac.luckyDirection}`;
+  
+  generateReadings();
+}
+
+function generateReadings() {
+  const readings = zodiacReadings[currentTab];
+  const seed = currentZodiac.name.charCodeAt(0) + new Date().getDate();
+  
+  const overallIdx = seed % readings.overall.length;
+  const loveIdx = (seed + 1) % readings.love.length;
+  const careerIdx = (seed + 2) % readings.career.length;
+  const wealthIdx = (seed + 3) % readings.wealth.length;
+  
+  const overallScore = 60 + ((seed * 7) % 35);
+  const loveScore = 55 + ((seed * 11) % 40);
+  const careerScore = 65 + ((seed * 5) % 30);
+  const wealthScore = 50 + ((seed * 13) % 40);
+  
+  document.getElementById('overall-score').textContent = overallScore + '%';
+  document.getElementById('love-score').textContent = loveScore + '%';
+  document.getElementById('career-score').textContent = careerScore + '%';
+  document.getElementById('wealth-score').textContent = wealthScore + '%';
+  
+  setTimeout(() => {
+    document.getElementById('overall-bar').style.width = overallScore + '%';
+    document.getElementById('love-bar').style.width = loveScore + '%';
+    document.getElementById('career-bar').style.width = careerScore + '%';
+    document.getElementById('wealth-bar').style.width = wealthScore + '%';
+  }, 100);
+  
+  document.getElementById('daily-overview').textContent = readings.overall[overallIdx];
+  document.getElementById('love-reading').textContent = readings.love[loveIdx];
+  document.getElementById('career-reading').textContent = readings.career[careerIdx];
+  document.getElementById('wealth-reading').textContent = readings.wealth[wealthIdx];
+}
+
+function switchTab(tab, btn) {
+  currentTab = tab;
+  
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.color = '#8A8278';
+    b.style.borderColor = 'rgba(201, 169, 110, 0.2)';
+  });
+  
+  btn.classList.add('active');
+  btn.style.color = '#C9A96E';
+  btn.style.borderColor = '#C9A96E';
+  
+  document.getElementById('overall-bar').style.width = '0%';
+  document.getElementById('love-bar').style.width = '0%';
+  document.getElementById('career-bar').style.width = '0%';
+  document.getElementById('wealth-bar').style.width = '0%';
+  
+  setTimeout(generateReadings, 200);
+}
+
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileNav = document.getElementById('mobile-nav');
+let menuOpen = false;
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener('click', function() {
+    menuOpen = !menuOpen;
+    if (menuOpen) {
+      mobileNav.style.maxHeight = '300px';
+    } else {
+      mobileNav.style.maxHeight = '0';
+    }
+  });
+}
+
+const header = document.getElementById('main-header');
+if (header) {
+  window.addEventListener('scroll', function() {
+    header.style.background = window.scrollY > 50 ? 'rgba(13, 13, 20, 0.95)' : 'rgba(13, 13, 20, 0.6)';
+    header.style.borderColor = window.scrollY > 50 ? 'rgba(201, 169, 110, 0.15)' : 'transparent';
+  });
+}
+
+const particlesContainer = document.getElementById('particles');
+if (particlesContainer) {
+  for (let i = 0; i < 15; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 8 + 's';
+    particle.style.animationDuration = (6 + Math.random() * 6) + 's';
+    const size = 2 + Math.random() * 4;
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    particlesContainer.appendChild(particle);
+  }
+}
+
+initZodiacGrid();
+</script>
+
+</body>
+</html>

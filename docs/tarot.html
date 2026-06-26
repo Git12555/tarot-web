@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔罗占卜 - 天机阁</title>
+    <meta name="description" content="精选塔罗牌阵，深入解读过去、现在与未来">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style>
+:root {
+  --color-primary: #C9A96E;
+  --color-primary-light: #E2CFA0;
+  --color-primary-dark: #A68B4B;
+  --bg-primary: #0D0D14;
+  --bg-secondary: #161622;
+  --bg-tertiary: #1E1E2E;
+  --text-primary: #F5F0E8;
+  --text-secondary: #B8B0A0;
+  --text-tertiary: #8A8278;
+  --font-display: 'Playfair Display', 'Noto Serif SC', Georgia, serif;
+  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-400), var(--color-primary-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.glass-panel {
+  background: rgba(26, 26, 42, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.mystical-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary-400), transparent);
+  opacity: 0.3;
+}
+html { scroll-behavior: smooth; }
+.fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(90deg, var(--color-primary-200), var(--color-primary-400), var(--color-primary-200));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.float-animation { animation: float 3s ease-in-out infinite; }
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(201, 169, 110, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(201, 169, 110, 0.5); }
+}
+.pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+@keyframes cardShuffle {
+  0% { transform: translateX(0) translateY(0) rotate(0deg) scale(1); }
+  15% { transform: translateX(-30px) translateY(-40px) rotate(-15deg) scale(1.15); }
+  30% { transform: translateX(35px) translateY(-25px) rotate(12deg) scale(0.9); }
+  45% { transform: translateX(-25px) translateY(-50px) rotate(-18deg) scale(1.1); }
+  60% { transform: translateX(40px) translateY(-20px) rotate(10deg) scale(0.95); }
+  75% { transform: translateX(-15px) translateY(-45px) rotate(-8deg) scale(1.05); }
+  100% { transform: translateX(0) translateY(0) rotate(0deg) scale(1); }
+}
+@keyframes dealCard {
+  0% { opacity: 0; transform: translateY(-120px) rotate(-15deg) scale(0.5); }
+  60% { opacity: 1; transform: translateY(10px) rotate(5deg) scale(1.1); }
+  100% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+}
+@keyframes cardFlip {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(180deg); }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(201, 169, 110, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(201, 169, 110, 0.6); }
+}
+.result-fade { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.result-fade.show { opacity: 1; transform: translateY(0); }
+.card-shuffle { animation: cardShuffle 0.6s ease-in-out; }
+.deal-animation { animation: dealCard 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.glow-pulse { animation: glowPulse 1.5s ease-in-out infinite; }
+.particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.particle { position: absolute; width: 4px; height: 4px; background: rgba(201, 169, 110, 0.4); border-radius: 50%; animation: particleFloat 8s infinite ease-in-out; }
+@keyframes particleFloat {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+}
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary-400), transparent);
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after, .nav-link.active::after { width: 100%; }
+.spread-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+.spread-card:hover { transform: translateY(-6px); border-color: rgba(201, 169, 110, 0.4); box-shadow: 0 12px 32px rgba(201, 169, 110, 0.15); }
+.spread-card.active { border-color: rgba(201, 169, 110, 0.6); box-shadow: 0 0 30px rgba(201, 169, 110, 0.2); }
+.tarot-deck-card {
+  position: absolute;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+  cursor: grab;
+  transform-style: preserve-3d;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+.tarot-deck-card:active {
+  cursor: grabbing;
+}
+.tarot-deck-card.dragging {
+  opacity: 0.8;
+  z-index: 1000 !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+  transition: none;
+}
+.tarot-deck-card.selected {
+  opacity: 0.3;
+  filter: brightness(0.5);
+}
+.tarot-deck-card.hover-over-slot {
+  transform: scale(1.2) !important;
+  box-shadow: 0 0 30px rgba(201, 169, 110, 0.5) !important;
+  border-color: rgba(201, 169, 110, 0.8) !important;
+  z-index: 500 !important;
+}
+.card-flip-container { perspective: 1000px; }
+.card-flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+.card-flip-inner.flipped { transform: rotateY(180deg); }
+.card-back, .card-front { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 8px; }
+.card-back { transform: rotateY(0deg); }
+.card-front { transform: rotateY(180deg); }
+.selected-slot {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.selected-slot.drag-over {
+  transform: scale(1.1);
+  border-color: rgba(201, 169, 110, 0.8) !important;
+  box-shadow: 0 0 30px rgba(201, 169, 110, 0.5), inset 0 0 20px rgba(201, 169, 110, 0.2) !important;
+  background: rgba(201, 169, 110, 0.15) !important;
+}
+.selected-slot.filled {
+  box-shadow: 0 0 25px rgba(201, 169, 110, 0.4);
+  border-color: rgba(201, 169, 110, 0.6) !important;
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.drag-preview {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.9;
+  transform: translate(-50%, -50%) rotate(5deg) scale(1.1);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased" style="background: #0D0D14; color: #F5F0E8;">
+
+<header id="main-header" class="fixed top-0 left-0 right-0 z-[200] border-b transition-all duration-300" style="background: rgba(13, 13, 20, 0.6); backdrop-filter: blur(12px); border-color: transparent;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <a href="index.html" class="flex items-center gap-2 no-underline" style="text-decoration: none;">
+      <span class="font-display text-xl tracking-wide" style="font-family: 'Playfair Display', serif; color: #C9A96E; letter-spacing: 0.05em;">天机阁</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8">
+      <a href="index.html" class="nav-link text-sm font-medium transition-colors duration-250" style="color: #B8B0A0; text-decoration: none;">首页</a>
+      <a href="bazi.html" class="nav-link text-sm font-medium transition-colors duration-250" style="color: #B8B0A0; text-decoration: none;">八字测算</a>
+      <a href="zodiac.html" class="nav-link text-sm font-medium transition-colors duration-250" style="color: #B8B0A0; text-decoration: none;">星座运势</a>
+      <a href="tarot.html" class="nav-link text-sm font-medium transition-colors duration-250 active" style="color: #C9A96E; text-decoration: none;">塔罗占卜</a>
+    </nav>
+    <button id="mobile-menu-btn" class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5" style="background: none; border: none; cursor: pointer;">
+      <span class="block w-5 h-0.5 transition-all duration-300" style="background: #C9A96E;"></span>
+      <span class="block w-5 h-0.5 transition-all duration-300" style="background: #C9A96E;"></span>
+      <span class="block w-5 h-0.5 transition-all duration-300" style="background: #C9A96E;"></span>
+    </button>
+  </div>
+  <nav id="mobile-nav" class="md:hidden overflow-hidden" style="max-height: 0; transition: max-height 400ms ease;">
+    <div class="px-6 pb-4 flex flex-col gap-3">
+      <a href="index.html" class="text-sm font-medium py-2" style="color: #B8B0A0; text-decoration: none;">首页</a>
+      <a href="bazi.html" class="text-sm font-medium py-2" style="color: #B8B0A0; text-decoration: none;">八字测算</a>
+      <a href="zodiac.html" class="text-sm font-medium py-2" style="color: #B8B0A0; text-decoration: none;">星座运势</a>
+      <a href="tarot.html" class="text-sm font-medium py-2" style="color: #C9A96E; text-decoration: none;">塔罗占卜</a>
+    </div>
+  </nav>
+</header>
+
+<main class="pt-16 min-h-screen">
+
+  <section class="relative w-full py-20 sm:py-28 flex items-center justify-center overflow-hidden" style="background: #0D0D14;">
+    <div class="particles" id="particles"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] sm:w-[600px] sm:h-[600px] rounded-full" style="background: radial-gradient(circle, rgba(201, 169, 110, 0.08) 0%, transparent 70%);"></div>
+    <div class="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
+      <h1 class="shimmer-text font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-6" style="font-family: 'Playfair Display', serif;">
+        塔罗占卜
+      </h1>
+      <p class="text-base sm:text-lg leading-relaxed mb-8 max-w-2xl mx-auto" style="color: #B8B0A0; font-family: var(--font-body);">
+        让古老的塔罗牌为您揭示隐藏的真相
+      </p>
+      <div class="mystical-divider mx-auto" style="max-width: 120px; height: 1px; background: linear-gradient(90deg, transparent, #C9A96E, transparent); opacity: 0.5;"></div>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
+    <h2 class="text-gradient-gold font-display text-2xl sm:text-3xl font-semibold text-center mb-10 fade-in" style="font-family: 'Playfair Display', serif;">
+      选择牌阵
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      <div class="spread-card glass-panel rounded-xl p-6 md:p-8 text-center fade-in stagger-1" style="border: 1px solid rgba(201, 169, 110, 0.15);" onclick="selectSpread('single')" data-spread="single">
+        <div class="w-20 h-20 mx-auto mb-5 flex items-center justify-center">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" stroke="#C9A96E" stroke-width="1" opacity="0.4"/><circle cx="32" cy="32" r="20" stroke="#C9A96E" stroke-width="1" opacity="0.3"/><polygon points="32,12 36,26 50,26 39,34 43,48 32,40 21,48 25,34 14,26 28,26" fill="none" stroke="#C9A96E" stroke-width="1" opacity="0.6"/><circle cx="32" cy="32" r="4" fill="#C9A96E" opacity="0.5"/></svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-2" style="color: #C9A96E; font-family: 'Noto Serif SC', serif;">单牌占卜</h3>
+        <p class="text-sm mb-3" style="color: #B8B0A0;">一张牌，回答一个简单的问题</p>
+        <span class="inline-block text-xs px-3 py-1 rounded-full" style="background: rgba(201, 169, 110, 0.1); color: #C9A96E; border: 1px solid rgba(201, 169, 110, 0.2);">快速解读</span>
+      </div>
+
+      <div class="spread-card active glass-panel rounded-xl p-6 md:p-8 text-center fade-in stagger-2" style="border: 2px solid rgba(201, 169, 110, 0.6); box-shadow: 0 0 30px rgba(201, 169, 110, 0.2);" onclick="selectSpread('three')" data-spread="three">
+        <div class="w-20 h-20 mx-auto mb-5 flex items-center justify-center">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" stroke="#C9A96E" stroke-width="1.5" opacity="0.6"/><circle cx="32" cy="32" r="20" stroke="#C9A96E" stroke-width="1" opacity="0.4"/><path d="M18,24 A8,8 0 0,1 18,40 A12,12 0 0,0 18,24" fill="none" stroke="#C9A96E" stroke-width="1" opacity="0.7"/><path d="M32,20 A8,8 0 0,1 32,36 A12,12 0 0,0 32,20" fill="none" stroke="#C9A96E" stroke-width="1" opacity="0.7"/><path d="M46,24 A8,8 0 0,1 46,40 A12,12 0 0,0 46,24" fill="none" stroke="#C9A96E" stroke-width="1" opacity="0.7"/><line x1="26" y1="32" x2="38" y2="32" stroke="#C9A96E" stroke-width="0.5" opacity="0.3"/><circle cx="32" cy="32" r="3" fill="#C9A96E" opacity="0.6"/></svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-2" style="color: #C9A96E; font-family: 'Noto Serif SC', serif;">三牌阵</h3>
+        <p class="text-sm mb-3" style="color: #B8B0A0;">过去、现在、未来的时间线解读</p>
+        <span class="inline-block text-xs px-3 py-1 rounded-full" style="background: rgba(201, 169, 110, 0.2); color: #E2CFA0; border: 1px solid rgba(201, 169, 110, 0.4);">经典牌阵</span>
+      </div>
+
+      <div class="spread-card glass-panel rounded-xl p-6 md:p-8 text-center fade-in stagger-3" style="border: 1px solid rgba(201, 169, 110, 0.15);" onclick="selectSpread('celtic')" data-spread="celtic">
+        <div class="w-20 h-20 mx-auto mb-5 flex items-center justify-center">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="28" stroke="#C9A96E" stroke-width="1" opacity="0.4"/><circle cx="32" cy="32" r="20" stroke="#C9A96E" stroke-width="1" opacity="0.3"/><line x1="32" y1="12" x2="32" y2="52" stroke="#C9A96E" stroke-width="1" opacity="0.5"/><line x1="12" y1="32" x2="52" y2="32" stroke="#C9A96E" stroke-width="1" opacity="0.5"/><circle cx="32" cy="32" r="10" fill="none" stroke="#C9A96E" stroke-width="1" opacity="0.5"/><circle cx="32" cy="32" r="5" fill="none" stroke="#C9A96E" stroke-width="1" opacity="0.4"/></svg>
+        </div>
+        <h3 class="text-xl font-semibold mb-2" style="color: #C9A96E; font-family: 'Noto Serif SC', serif;">凯尔特十字</h3>
+        <p class="text-sm mb-3" style="color: #B8B0A0;">深度全面的生命解读</p>
+        <span class="inline-block text-xs px-3 py-1 rounded-full" style="background: rgba(201, 169, 110, 0.1); color: #C9A96E; border: 1px solid rgba(201, 169, 110, 0.2);">十张牌阵</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6"><div class="mystical-divider" style="height: 1px; background: linear-gradient(90deg, transparent, #C9A96E, transparent); opacity: 0.3;"></div></div>
+
+  <section id="card-selection" class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+    <div class="text-center mb-8">
+      <h2 id="selection-title" class="text-gradient-gold font-display text-2xl sm:text-3xl font-semibold mb-4 fade-in" style="font-family: 'Playfair Display', serif;">请拖拽三张牌到下方</h2>
+      <p id="selection-desc" class="text-sm mb-4 fade-in stagger-1" style="color: #B8B0A0;">将卡牌拖拽到选择槽位中</p>
+      <div id="selection-count" class="inline-block px-4 py-2 rounded-full text-sm fade-in stagger-2" style="color: #C9A96E; border: 1px solid rgba(201, 169, 110, 0.3);">已选 0 / 3 张</div>
+    </div>
+
+    <div class="flex justify-center mb-6">
+      <button onclick="shuffleDeck()" id="shuffle-btn" class="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-all duration-300" style="background: rgba(201, 169, 110, 0.1); border: 1px solid rgba(201, 169, 110, 0.3); color: #C9A96E; cursor: pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        洗牌
+      </button>
+    </div>
+
+    <div id="selection-slots-wrapper" class="mb-8">
+      <p class="text-center text-sm mb-3" style="color: #8A8278;">拖拽卡牌到此处</p>
+      <div id="selection-slots" class="flex flex-wrap justify-center gap-3 sm:gap-4"></div>
+    </div>
+
+    <div id="tarot-deck" class="relative flex items-center justify-center mb-8 py-16 overflow-x-auto no-scrollbar" style="min-height: 380px;">
+      <div id="deck-container" class="relative" style="width: 100%; height: 320px; display: flex; justify-content: center; align-items: center;"></div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
+      <button onclick="resetSelection()" class="px-6 py-3 rounded-full text-sm font-medium transition-all duration-300" style="background: transparent; border: 1px solid rgba(201, 169, 110, 0.3); color: #B8B0A0; cursor: pointer;">重新选牌</button>
+      <button id="draw-btn" onclick="drawCards()" class="px-8 py-3 rounded-full text-sm font-semibold transition-all duration-300" style="background: linear-gradient(135deg, #C9A96E, #A68B4B); color: #1A1A0E; cursor: pointer; border: none; opacity: 0.5; pointer-events: none; box-shadow: 0 0 20px rgba(201, 169, 110, 0.3);">开始解读</button>
+    </div>
+  </section>
+
+  <section id="reading-result" class="relative py-16 md:py-24 px-4 sm:px-6 result-fade" style="display: none;">
+    <div class="absolute inset-0" style="background: linear-gradient(180deg, #0D0D14 0%, #161622 50%, #0D0D14 100%);"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] sm:w-[600px] sm:h-[600px] rounded-full" style="background: radial-gradient(circle, rgba(201, 169, 110, 0.08) 0%, transparent 70%);"></div>
+    <div class="relative z-10 max-w-5xl mx-auto">
+      <h2 class="text-gradient-gold font-display text-2xl md:text-3xl font-semibold text-center mb-4" style="font-family: 'Playfair Display', serif;">您的牌面解读</h2>
+      <p id="result-subtitle" class="text-center text-sm mb-12" style="color: #B8B0A0;">三牌阵 · 过去 · 现在 · 未来</p>
+      <div id="result-cards" class="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mb-12"></div>
+      <div class="glass-panel rounded-xl p-6 sm:p-8 md:p-10 mb-10" style="border: 1px solid rgba(201, 169, 110, 0.25);">
+        <h3 class="text-gradient-gold font-display text-xl font-semibold mb-6 text-center" style="font-family: 'Playfair Display', serif;">综合解读</h3>
+        <p id="comprehensive-reading" class="text-base leading-relaxed text-center max-w-3xl mx-auto" style="color: #B8B0A0;"></p>
+      </div>
+      <div class="text-center">
+        <button onclick="resetAll()" class="px-10 py-4 rounded-full text-base font-semibold transition-all duration-300" style="background: linear-gradient(135deg, #C9A96E, #A68B4B); color: #1A1A0E; border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(201,169,110,0.3);">再占一次</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer style="background: #0D0D14; border-top: 1px solid rgba(201, 169, 110, 0.15);">
+  <div class="mystical-divider" style="height: 1px; background: linear-gradient(90deg, transparent, #C9A96E, transparent); opacity: 0.3;"></div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-xs" style="color: #8A8278;">&copy; 2026 天机阁 TianJiGe. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="text-xs" style="color: #8A8278; text-decoration: none;">首页</a>
+        <span style="color: rgba(201, 169, 110, 0.15);">|</span>
+        <a href="tarot.html" class="text-xs" style="color: #8A8278; text-decoration: none;">塔罗占卜</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="drag-preview" class="drag-preview" style="display: none;"></div>
+
+<script>
+const tarotCards = [
+  { id: 0, name: '愚者', nameEn: 'The Fool', type: 'major', element: '风', meaning: '新的开始、冒险、纯真、自由', desc: '愚者牌象征着一段充满冒险精神的旅程。怀揣着纯真的勇气踏上未知的道路，不畏前方的悬崖，以赤子之心拥抱每一个可能性。' },
+  { id: 1, name: '魔术师', nameEn: 'The Magician', type: 'major', element: '风', meaning: '创造力、意志力、技能、行动', desc: '魔术师代表着将意念转化为现实的能力。您拥有实现目标所需的一切资源和才能，现在是采取行动的最佳时机。' },
+  { id: 2, name: '女祭司', nameEn: 'The High Priestess', type: 'major', element: '水', meaning: '直觉、神秘、内在智慧、潜意识', desc: '女祭司邀请您倾听内心的声音。答案不在外界，而在您的内心深处。保持静默，相信直觉，隐藏的真相将会逐渐浮现。' },
+  { id: 3, name: '皇后', nameEn: 'The Empress', type: 'major', element: '土', meaning: '丰饶、母性、自然、创造力', desc: '皇后牌象征着丰饶与滋养。无论是感情、事业还是创意，都处于蓬勃发展的阶段。让爱与美丽在生活中绽放。' },
+  { id: 4, name: '皇帝', nameEn: 'The Emperor', type: 'major', element: '火', meaning: '权威、秩序、结构、父亲形象', desc: '皇帝代表着稳固的基础与有序的力量。通过自律与规划建立稳固的根基，以理性和权威面对挑战。' },
+  { id: 5, name: '教皇', nameEn: 'The Hierophant', type: 'major', element: '土', meaning: '传统、信仰、教导、精神指引', desc: '教皇牌象征着传统智慧与精神指引。寻求前辈或导师的建议，遵循已验证的道路。学习与分享知识将带来更深的领悟。' },
+  { id: 6, name: '恋人', nameEn: 'The Lovers', type: 'major', element: '风', meaning: '爱情、选择、和谐、价值观', desc: '恋人牌代表着重要的选择与深刻的连接。无论是感情关系还是人生抉择，都需要倾听内心真正的渴望。爱与和谐是这段时期的主题。' },
+  { id: 7, name: '战车', nameEn: 'The Chariot', type: 'major', element: '水', meaning: '胜利、意志力、决心、控制', desc: '战车象征着通过意志力与决心取得胜利。您正朝着目标坚定前进，虽然道路上有挑战，但您有足够的力量去克服。' },
+  { id: 8, name: '力量', nameEn: 'Strength', type: 'major', element: '火', meaning: '勇气、耐心、内在力量、温柔', desc: '力量牌展现的不是蛮力，而是温柔而坚定的内在力量。以耐心和勇气面对困难，用爱而非恐惧来引导。' },
+  { id: 9, name: '隐士', nameEn: 'The Hermit', type: 'major', element: '土', meaning: '内省、独处、智慧、寻求真理', desc: '隐士邀请您进入内心的独处时光。远离喧嚣，寻求内在的真理与智慧。这段内省的时期将带来深刻的洞察和灵魂的成长。' },
+  { id: 10, name: '命运之轮', nameEn: 'Wheel of Fortune', type: 'major', element: '火', meaning: '变化、循环、命运、转折点', desc: '命运之轮预示着重大的转变与循环。无论当前境遇如何，变化即将来临。顺应宇宙的节奏，保持开放的心态。' },
+  { id: 11, name: '正义', nameEn: 'Justice', type: 'major', element: '风', meaning: '公正、真相、因果、平衡', desc: '正义牌象征着公正与真相。所有的行为都会产生相应的结果，因果循环正在显现。以诚实和公平的态度面对一切。' },
+  { id: 12, name: '倒吊人', nameEn: 'The Hanged Man', type: 'major', element: '水', meaning: '牺牲、换位思考、暂停、新视角', desc: '倒吊人邀请您换个角度看问题。有时候，暂停和牺牲是为了更高的目标。放下执着，以不同的视角审视现状。' },
+  { id: 13, name: '死神', nameEn: 'Death', type: 'major', element: '水', meaning: '结束、转变、重生、释放', desc: '死神牌并非预示肉体死亡，而是象征着旧事物的结束和新生命的开始。勇敢地放下不再服务于您的一切，为新的可能腾出空间。' },
+  { id: 14, name: '节制', nameEn: 'Temperance', type: 'major', element: '火', meaning: '平衡、耐心、适度、调和', desc: '节制牌代表着平衡与调和。在极端之间找到中道，以耐心和适度的态度生活。身心的平衡将带来内在的平静。' },
+  { id: 15, name: '恶魔', nameEn: 'The Devil', type: 'major', element: '土', meaning: '束缚、欲望、物质主义、阴影', desc: '恶魔牌揭示了您可能正在被某些事物所束缚。认识到枷锁的存在，是获得自由的第一步。' },
+  { id: 16, name: '塔', nameEn: 'The Tower', type: 'major', element: '火', meaning: '突变、觉醒、破坏、启示', desc: '塔牌象征着突如其来的改变与觉醒。虽然过程令人不安，但最终将带来解放与成长。' },
+  { id: 17, name: '星星', nameEn: 'The Star', type: 'major', element: '风', meaning: '希望、灵感、治愈、宁静', desc: '星星牌带来希望与治愈的能量。经历了风雨之后，宁静与光明重新降临。' },
+  { id: 18, name: '月亮', nameEn: 'The Moon', type: 'major', element: '水', meaning: '幻觉、直觉、潜意识、神秘', desc: '月亮牌邀请您探索潜意识的深处。事物可能并非表面所见，需要依靠直觉来辨别真相。' },
+  { id: 19, name: '太阳', nameEn: 'The Sun', type: 'major', element: '火', meaning: '快乐、成功、活力、光明', desc: '太阳牌是塔罗牌中最积极的牌之一。光明、快乐、成功充满您的生活。' },
+  { id: 20, name: '审判', nameEn: 'Judgement', type: 'major', element: '火', meaning: '觉醒、重生、召唤、宽恕', desc: '审判牌象征着觉醒与新生。一个重要的召唤正在响起，是时候审视过去，原谅自己和他人。' },
+  { id: 21, name: '世界', nameEn: 'The World', type: 'major', element: '土', meaning: '完成、整合、成就、圆满', desc: '世界牌代表着一个周期的圆满完成。您已经走过了漫长的旅程，获得了宝贵的经验与智慧。' },
+  { id: 22, name: '宝剑 Ace', nameEn: 'Ace of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '新思想、清晰、真相、沟通', desc: '宝剑首牌象征着新思想的诞生和清晰的思维。您将获得重要的洞察，能够看清事物的本质。' },
+  { id: 23, name: '宝剑 2', nameEn: 'Two of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '僵局、犹豫、平衡、抉择', desc: '宝剑二表示处于两难境地，需要在两个选项之间做出选择。' },
+  { id: 24, name: '宝剑 3', nameEn: 'Three of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '心碎、悲伤、失望、疗愈', desc: '宝剑三代表着情感上的伤痛和失望。虽然此刻感到痛苦，但这也是一个疗愈和成长的机会。' },
+  { id: 25, name: '宝剑 4', nameEn: 'Four of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '休息、沉思、恢复、内省', desc: '宝剑四提醒您需要停下来休息和恢复。' },
+  { id: 26, name: '宝剑 5', nameEn: 'Five of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '冲突、胜利、牺牲、妥协', desc: '宝剑五表示冲突和竞争。' },
+  { id: 27, name: '宝剑 6', nameEn: 'Six of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '过渡、平静、疗愈、前进', desc: '宝剑六象征着从动荡走向平静的过渡。' },
+  { id: 28, name: '宝剑 7', nameEn: 'Seven of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '策略、欺骗、秘密、逃避', desc: '宝剑七提醒您要小心策略和欺骗。' },
+  { id: 29, name: '宝剑 8', nameEn: 'Eight of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '限制、恐惧、自我设限、束缚', desc: '宝剑八表示您可能感到被限制或束缚。' },
+  { id: 30, name: '宝剑 9', nameEn: 'Nine of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '焦虑、噩梦、恐惧、担忧', desc: '宝剑九代表着焦虑和担忧困扰着您。' },
+  { id: 31, name: '宝剑 10', nameEn: 'Ten of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '结束、痛苦、新生、转变', desc: '宝剑十象征着一个痛苦但必要的结束。' },
+  { id: 32, name: '宝剑 侍从', nameEn: 'Page of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '好奇心、学习、沟通、机智', desc: '宝剑侍从代表着好奇心和学习的热情。' },
+  { id: 33, name: '宝剑 骑士', nameEn: 'Knight of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '行动、勇气、直言、冲动', desc: '宝剑骑士象征着快速的行动和直言不讳的态度。' },
+  { id: 34, name: '宝剑 皇后', nameEn: 'Queen of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '智慧、独立、公正、清晰', desc: '宝剑皇后代表着智慧和独立。' },
+  { id: 35, name: '宝剑 国王', nameEn: 'King of Swords', type: 'minor', suit: 'swords', element: '风', meaning: '权威、逻辑、领导、公正', desc: '宝剑国王象征着权威和逻辑思维。' },
+  { id: 36, name: '圣杯 Ace', nameEn: 'Ace of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '新感情、爱、直觉、疗愈', desc: '圣杯首牌象征着新的感情和爱的开始。' },
+  { id: 37, name: '圣杯 2', nameEn: 'Two of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '合作、伙伴关系、爱情、和谐', desc: '圣杯二代表着平等的合作和深厚的关系。' },
+  { id: 38, name: '圣杯 3', nameEn: 'Three of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '庆祝、友谊、喜悦、社交', desc: '圣杯三象征着庆祝和欢乐的社交场合。' },
+  { id: 39, name: '圣杯 4', nameEn: 'Four of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '不满、反思、选择、内省', desc: '圣杯四表示对现状不满，需要反思自己的选择。' },
+  { id: 40, name: '圣杯 5', nameEn: 'Five of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '悲伤、失落、失望、希望', desc: '圣杯五代表着失望和悲伤，但牌面上依然有两个杯子是立着的。' },
+  { id: 41, name: '圣杯 6', nameEn: 'Six of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '回忆、童年、怀旧、礼物', desc: '圣杯六象征着美好的回忆和童年的纯真。' },
+  { id: 42, name: '圣杯 7', nameEn: 'Seven of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '幻象、选择、欲望、白日梦', desc: '圣杯七表示面临多种选择，但有些可能只是幻象。' },
+  { id: 43, name: '圣杯 8', nameEn: 'Eight of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '离开、寻找、成长、放弃', desc: '圣杯八代表着主动离开当前的环境，去寻找更好的机会。' },
+  { id: 44, name: '圣杯 9', nameEn: 'Nine of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '满足、成功、快乐、愿望达成', desc: '圣杯九象征着愿望的达成和内心的满足。' },
+  { id: 45, name: '圣杯 10', nameEn: 'Ten of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '家庭、幸福、和谐、圆满', desc: '圣杯十代表着家庭的幸福和圆满。' },
+  { id: 46, name: '圣杯 侍从', nameEn: 'Page of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '敏感、直觉、浪漫、创意', desc: '圣杯侍从代表着敏感和直觉力的提升。' },
+  { id: 47, name: '圣杯 骑士', nameEn: 'Knight of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '浪漫、温柔、理想主义、幻想', desc: '圣杯骑士象征着浪漫和温柔的情感表达。' },
+  { id: 48, name: '圣杯 皇后', nameEn: 'Queen of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '温柔、直觉、治愈、包容', desc: '圣杯皇后代表着温柔和包容。' },
+  { id: 49, name: '圣杯 国王', nameEn: 'King of Cups', type: 'minor', suit: 'cups', element: '水', meaning: '成熟、理智、情感稳定、领导力', desc: '圣杯国王象征着情感的成熟和稳定。' },
+  { id: 50, name: '权杖 Ace', nameEn: 'Ace of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '新计划、热情、创造力、行动力', desc: '权杖首牌象征着新计划的开始和热情的点燃。' },
+  { id: 51, name: '权杖 2', nameEn: 'Two of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '计划、远见、控制、选择', desc: '权杖二代表着远见和计划。' },
+  { id: 52, name: '权杖 3', nameEn: 'Three of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '展望、扩张、远见、成功', desc: '权杖三象征着展望未来和扩张的机会。' },
+  { id: 53, name: '权杖 4', nameEn: 'Four of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '庆祝、稳定、家庭、和谐', desc: '权杖四代表着庆祝和稳定。' },
+  { id: 54, name: '权杖 5', nameEn: 'Five of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '竞争、冲突、挑战、奋斗', desc: '权杖五表示竞争和冲突。' },
+  { id: 55, name: '权杖 6', nameEn: 'Six of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '胜利、荣耀、认可、成功', desc: '权杖六象征着胜利和荣耀。' },
+  { id: 56, name: '权杖 7', nameEn: 'Seven of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '防御、坚持、挑战、勇气', desc: '权杖七代表着防御和坚持。' },
+  { id: 57, name: '权杖 8', nameEn: 'Eight of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '快速行动、消息、旅行、沟通', desc: '权杖八象征着快速的行动和消息的传递。' },
+  { id: 58, name: '权杖 9', nameEn: 'Nine of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '警惕、防御、准备、勇气', desc: '权杖九表示保持警惕和准备。' },
+  { id: 59, name: '权杖 10', nameEn: 'Ten of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '负担、责任、压力、释放', desc: '权杖十代表着负担和责任。' },
+  { id: 60, name: '权杖 侍从', nameEn: 'Page of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '热情、好奇、创意、冒险', desc: '权杖侍从代表着热情和好奇心。' },
+  { id: 61, name: '权杖 骑士', nameEn: 'Knight of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '热情、行动力、冒险、冲动', desc: '权杖骑士象征着热情和行动力。' },
+  { id: 62, name: '权杖 皇后', nameEn: 'Queen of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '热情、自信、创造力、领导力', desc: '权杖皇后代表着热情和自信。' },
+  { id: 63, name: '权杖 国王', nameEn: 'King of Wands', type: 'minor', suit: 'wands', element: '火', meaning: '领导、权威、热情、成功', desc: '权杖国王象征着领导力和权威。' },
+  { id: 64, name: '星币 Ace', nameEn: 'Ace of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '新机会、财富、物质、安全', desc: '星币首牌象征着新的机会和财富的到来。' },
+  { id: 65, name: '星币 2', nameEn: 'Two of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '平衡、管理、多任务、选择', desc: '星币二代表着平衡和管理。' },
+  { id: 66, name: '星币 3', nameEn: 'Three of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '合作、技能、学习、专业', desc: '星币三象征着合作和专业技能的提升。' },
+  { id: 67, name: '星币 4', nameEn: 'Four of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '安全感、储蓄、保守、占有', desc: '星币四代表着安全感和储蓄。' },
+  { id: 68, name: '星币 5', nameEn: 'Five of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '困难、损失、财务问题、求助', desc: '星币五表示面临一些财务上的困难和损失。' },
+  { id: 69, name: '星币 6', nameEn: 'Six of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '给予、接受、慈善、公平', desc: '星币六象征着给予和接受。' },
+  { id: 70, name: '星币 7', nameEn: 'Seven of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '评估、反思、进展、投资', desc: '星币七代表着评估和反思。' },
+  { id: 71, name: '星币 8', nameEn: 'Eight of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '专注、技能、勤奋、精益求精', desc: '星币八象征着专注和勤奋。' },
+  { id: 72, name: '星币 9', nameEn: 'Nine of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '成功、独立、富足、享受', desc: '星币九代表着成功和富足。' },
+  { id: 73, name: '星币 10', nameEn: 'Ten of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '财富、遗产、家庭、传承', desc: '星币十象征着财富的积累和家庭的传承。' },
+  { id: 74, name: '星币 侍从', nameEn: 'Page of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '学习、勤奋、耐心、成长', desc: '星币侍从代表着学习和成长。' },
+  { id: 75, name: '星币 骑士', nameEn: 'Knight of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '可靠、勤奋、耐心、踏实', desc: '星币骑士象征着可靠和踏实。' },
+  { id: 76, name: '星币 皇后', nameEn: 'Queen of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '富足、滋养、务实、关怀', desc: '星币皇后代表着富足和务实。' },
+  { id: 77, name: '星币 国王', nameEn: 'King of Pentacles', type: 'minor', suit: 'pentacles', element: '土', meaning: '成功、权威、财富、领导力', desc: '星币国王象征着成功和财富。' }
+];
+
+const positionNames = {
+  single: ['今日指引'],
+  three: ['过去', '现在', '未来'],
+  celtic: ['现状', '挑战', '潜意识', '过去', '可能性', '近期未来', '自我态度', '外部环境', '希望与恐惧', '最终结果']
+};
+
+const suitSymbols = { swords: '⚔️', cups: '🥃', wands: '🪄', pentacles: '💎' };
+const elementColors = { '火': '#F87171', '水': '#60A5FA', '风': '#A78BFA', '土': '#4ADE80' };
+const elementIcons = { '火': '🔥', '水': '💧', '风': '💨', '土': '🌍' };
+
+const cardPatterns = [
+  { type: 'star' }, { type: 'moon' }, { type: 'eye' }, { type: 'diamond' },
+  { type: 'sun' }, { type: 'pentagram' }, { type: 'crescent' }, { type: 'wheel' }
+];
+
+let currentSpread = 'three';
+let selectedCards = [];
+let deckCards = [];
+let isShuffling = false;
+let isAnimating = false;
+
+let draggedCard = null;
+let draggedCardEl = null;
+let dragPreview = null;
+
+function getCardPattern(index) {
+  const pattern = cardPatterns[index % cardPatterns.length];
+  const size = 48, cx = size / 2, cy = size / 2;
+  switch(pattern.type) {
+    case 'star': return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" class="w-10 h-10 sm:w-14 sm:h-14"><circle cx="${cx}" cy="${cy}" r="${cx-4}" stroke="#C9A96E" stroke-width="0.8" opacity="0.4"/><polygon points="${cx},${cx-14} ${cx+5},${cx-4} ${cx+14},${cx-4} ${cx+7},${cx+3} ${cx+10},${cx+12} ${cx},${cx+6} ${cx-10},${cx+12} ${cx-7},${cx+3} ${cx-14},${cx-4} ${cx-5},${cx-4}" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.6"/><circle cx="${cx}" cy="${cy}" r="3" fill="#C9A96E" opacity="0.5"/></svg>`;
+    case 'moon': return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" class="w-10 h-10 sm:w-14 sm:h-14"><circle cx="${cx}" cy="${cy}" r="${cx-4}" stroke="#C9A96E" stroke-width="0.8" opacity="0.4"/><path d="M${cx-6},${cy-12} A12,12 0 0,1 ${cx-6},${cy+12} A8,8 0 0,0 ${cx-6},${cy-12}" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.6"/></svg>`;
+    case 'eye': return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" class="w-10 h-10 sm:w-14 sm:h-14"><circle cx="${cx}" cy="${cy}" r="${cx-4}" stroke="#C9A96E" stroke-width="0.8" opacity="0.4"/><ellipse cx="${cx}" cy="${cy}" rx="14" ry="9" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.6"/><circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.6"/><circle cx="${cx}" cy="${cy}" r="3" fill="#C9A96E" opacity="0.6"/></svg>`;
+    case 'diamond': return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" class="w-10 h-10 sm:w-14 sm:h-14"><circle cx="${cx}" cy="${cy}" r="${cx-4}" stroke="#C9A96E" stroke-width="0.8" opacity="0.4"/><polygon points="${cx},${cx-14} ${cx+12},${cy} ${cx},${cy+14} ${cx-12},${cy}" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.6"/></svg>`;
+    case 'sun': return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" class="w-10 h-10 sm:w-14 sm:h-14"><circle cx="${cx}" cy="${cy}" r="${cx-4}" stroke="#C9A96E" stroke-width="0.8" opacity="0.4"/><circle cx="${cx}" cy="${cy}" r="8" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.6"/></svg>`;
+    case 'pentagram': return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" class="w-10 h-10 sm:w-14 sm:h-14"><circle cx="${cx}" cy="${cy}" r="${cx-4}" stroke="#C9A96E" stroke-width="0.8" opacity="0.4"/><polygon points="${cx},${cx-13} ${cx+12},${cx-4} ${cx+8},${cx+11} ${cx-8},${cy+11} ${cx-12},${cx-4}" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.6"/></svg>`;
+    case 'crescent': return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" class="w-10 h-10 sm:w-14 sm:h-14"><circle cx="${cx}" cy="${cy}" r="${cx-4}" stroke="#C9A96E" stroke-width="0.8" opacity="0.4"/><path d="M${cx+4},${cy-11} A11,11 0 1,1 ${cx+4},${cy+11} A8,8 0 1,0 ${cx+4},${cy-11}" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.6"/></svg>`;
+    case 'wheel': return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none" class="w-10 h-10 sm:w-14 sm:h-14"><circle cx="${cx}" cy="${cy}" r="${cx-4}" stroke="#C9A96E" stroke-width="0.8" opacity="0.4"/><circle cx="${cx}" cy="${cy}" r="12" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.6"/><circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="#C9A96E" stroke-width="0.6" opacity="0.5"/></svg>`;
+    default: return '';
+  }
+}
+
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function getMaxCards() { return currentSpread === 'single' ? 1 : currentSpread === 'three' ? 3 : 10; }
+
+function shuffleDeck() {
+  if (isShuffling || isAnimating) return;
+  isShuffling = true;
+  const shuffleBtn = document.getElementById('shuffle-btn');
+  shuffleBtn.disabled = true;
+  shuffleBtn.style.opacity = '0.5';
+
+  const deckContainer = document.getElementById('deck-container');
+  const cards = deckContainer.querySelectorAll('.tarot-deck-card');
+
+  if (cards.length > 0) {
+    cards.forEach((card, index) => {
+      card.classList.add('card-shuffle');
+      card.style.animationDelay = (index * 0.03) + 's';
+    });
+  }
+
+  setTimeout(() => {
+    selectedCards = [];
+    deckCards = shuffleArray([...tarotCards]);
+    initDeck(true);
+    isShuffling = false;
+    shuffleBtn.disabled = false;
+    shuffleBtn.style.opacity = '1';
+    updateSelectionUI();
+    updateSelectionSlots();
+  }, 800);
+}
+
+function initDeck(withAnimation = false) {
+  const deckContainer = document.getElementById('deck-container');
+  deckContainer.innerHTML = '';
+  if (!deckCards.length) deckCards = shuffleArray([...tarotCards]);
+
+  const maxVisibleCards = Math.min(deckCards.length, 22);
+  const displayCards = deckCards.slice(0, maxVisibleCards);
+  const isMobile = window.innerWidth < 768;
+  const cardWidth = isMobile ? 60 : 80;
+  const cardHeight = isMobile ? 90 : 120;
+
+  const containerWidth = deckContainer.offsetWidth || window.innerWidth * 0.8;
+  const fanRadius = isMobile ? Math.min(containerWidth * 0.5, 220) : Math.min(containerWidth * 0.4, 300);
+  const startAngle = 200;
+  const endAngle = 340;
+  const angleStep = (endAngle - startAngle) / (displayCards.length - 1 || 1);
+  const centerY = isMobile ? 80 : 100;
+
+  displayCards.forEach((card, i) => {
+    const angle = (startAngle + i * angleStep) * (Math.PI / 180);
+    const x = Math.cos(angle) * fanRadius;
+    const y = Math.sin(angle) * fanRadius * 0.5 + centerY;
+    const rotation = (angle - Math.PI / 2) * (180 / Math.PI);
+
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'tarot-deck-card';
+    cardDiv.style.width = cardWidth + 'px';
+    cardDiv.style.height = cardHeight + 'px';
+    cardDiv.style.left = '50%';
+    cardDiv.style.top = '50%';
+    cardDiv.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${rotation}deg)`;
+    cardDiv.style.background = 'linear-gradient(145deg, #2a2a40 0%, #1e1e2e 100%)';
+    cardDiv.style.border = '2px solid rgba(201, 169, 110, 0.3)';
+    cardDiv.style.borderRadius = '8px';
+    cardDiv.style.boxShadow = '0 8px 20px rgba(0,0,0,0.6)';
+    cardDiv.style.zIndex = i + 1;
+    cardDiv.dataset.cardId = card.id;
+    cardDiv.dataset.patternIndex = i;
+    cardDiv.dataset.finalX = x;
+    cardDiv.dataset.finalY = y;
+    cardDiv.dataset.finalRotation = rotation;
+
+    if (withAnimation) {
+      cardDiv.style.opacity = '0';
+      const randomX = (Math.random() - 0.5) * 200;
+      const randomY = (Math.random() - 0.5) * 200;
+      const randomRot = (Math.random() - 0.5) * 60;
+      cardDiv.style.transform = `translate(calc(-50% + ${randomX}px), calc(-50% + ${randomY}px)) rotate(${randomRot}deg)`;
+      setTimeout(() => {
+        cardDiv.style.transition = 'opacity 0.5s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        cardDiv.style.opacity = '1';
+        cardDiv.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${rotation}deg)`;
+      }, i * 40);
+    }
+
+    cardDiv.innerHTML = `<div class="w-full h-full flex items-center justify-center overflow-hidden rounded-lg" style="backface-visibility: hidden;">${getCardPattern(i)}</div>`;
+
+    cardDiv.addEventListener('mousedown', handleDragStart);
+    cardDiv.addEventListener('touchstart', handleDragStart, { passive: false });
+
+    deckContainer.appendChild(cardDiv);
+  });
+}
+
+function handleDragStart(e) {
+  if (isShuffling || isAnimating) return;
+  e.preventDefault();
+  e.stopPropagation();
+
+  const cardEl = e.currentTarget;
+  const cardId = parseInt(cardEl.dataset.cardId);
+  const card = tarotCards.find(c => c.id === cardId);
+  if (!card) return;
+
+  if (cardEl.classList.contains('selected')) return;
+
+  draggedCard = card;
+  draggedCardEl = cardEl;
+
+  dragPreview = document.getElementById('drag-preview');
+  dragPreview.innerHTML = cardEl.innerHTML;
+  dragPreview.style.width = cardEl.style.width;
+  dragPreview.style.height = cardEl.style.height;
+  dragPreview.style.display = 'block';
+  dragPreview.style.border = cardEl.style.border;
+  dragPreview.style.borderRadius = cardEl.style.borderRadius;
+  dragPreview.style.background = cardEl.style.background;
+
+  cardEl.classList.add('dragging');
+  cardEl.style.zIndex = '999';
+
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  updateDragPreviewPosition(clientX, clientY);
+
+  document.addEventListener('mousemove', handleDragMove, true);
+  document.addEventListener('touchmove', handleDragMove, { passive: false, capture: true });
+  document.addEventListener('mouseup', handleDragEnd, true);
+  document.addEventListener('touchend', handleDragEnd, true);
+  document.addEventListener('touchcancel', handleDragEnd, true);
+}
+
+function handleDragMove(e) {
+  if (!draggedCardEl) return;
+  e.preventDefault();
+  e.stopPropagation();
+
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+  updateDragPreviewPosition(clientX, clientY);
+
+  const slots = document.querySelectorAll('.selected-slot');
+  let hoveredSlotIndex = -1;
+
+  slots.forEach((slot, index) => {
+    const rect = slot.getBoundingClientRect();
+    const expandPx = 20;
+    if (clientX >= rect.left - expandPx && clientX <= rect.right + expandPx &&
+        clientY >= rect.top - expandPx && clientY <= rect.bottom + expandPx) {
+      hoveredSlotIndex = index;
+    }
+  });
+
+  slots.forEach((slot, index) => {
+    if (index === hoveredSlotIndex) {
+      slot.classList.add('drag-over');
+    } else {
+      slot.classList.remove('drag-over');
+    }
+  });
+
+  if (hoveredSlotIndex >= 0) {
+    draggedCardEl.classList.add('hover-over-slot');
+  } else {
+    draggedCardEl.classList.remove('hover-over-slot');
+  }
+}
+
+function handleDragEnd(e) {
+  if (!draggedCardEl || !draggedCard) return;
+
+  const clientX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+  const clientY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+
+  let targetSlotIndex = -1;
+  const slots = document.querySelectorAll('.selected-slot');
+
+  slots.forEach((slot, index) => {
+    slot.classList.remove('drag-over');
+    const rect = slot.getBoundingClientRect();
+    const expandPx = 20;
+    if (clientX >= rect.left - expandPx && clientX <= rect.right + expandPx &&
+        clientY >= rect.top - expandPx && clientY <= rect.bottom + expandPx) {
+      if (targetSlotIndex === -1) {
+        targetSlotIndex = index;
+      }
+    }
+  });
+
+  if (targetSlotIndex >= 0) {
+    selectCardForSlot(draggedCard, draggedCardEl, targetSlotIndex);
+  } else {
+    draggedCardEl.classList.remove('dragging', 'hover-over-slot');
+    draggedCardEl.style.zIndex = '';
+  }
+
+  draggedCardEl = null;
+  draggedCard = null;
+
+  if (dragPreview) {
+    dragPreview.style.display = 'none';
+  }
+
+  document.removeEventListener('mousemove', handleDragMove, true);
+  document.removeEventListener('touchmove', handleDragMove, true);
+  document.removeEventListener('mouseup', handleDragEnd, true);
+  document.removeEventListener('touchend', handleDragEnd, true);
+  document.removeEventListener('touchcancel', handleDragEnd, true);
+}
+
+function updateDragPreviewPosition(x, y) {
+  if (dragPreview) {
+    dragPreview.style.left = x + 'px';
+    dragPreview.style.top = y + 'px';
+  }
+}
+
+function selectCardForSlot(card, cardEl, slotIndex) {
+  const maxCards = getMaxCards();
+
+  const existingIndex = selectedCards.findIndex(c => c.id === card.id);
+  if (existingIndex > -1) {
+    selectedCards.splice(existingIndex, 1);
+  }
+
+  if (selectedCards.length >= maxCards) {
+    const oldestCard = selectedCards.shift();
+    const oldCardEl = document.querySelector(`.tarot-deck-card[data-card-id="${oldestCard.id}"]`);
+    if (oldCardEl) {
+      oldCardEl.classList.remove('selected');
+      oldCardEl.style.zIndex = '';
+    }
+  }
+
+  if (slotIndex >= selectedCards.length) {
+    selectedCards.push(card);
+  } else {
+    if (selectedCards[slotIndex]) {
+      const replacedCard = selectedCards[slotIndex];
+      const replacedCardEl = document.querySelector(`.tarot-deck-card[data-card-id="${replacedCard.id}"]`);
+      if (replacedCardEl) {
+        replacedCardEl.classList.remove('selected');
+        replacedCardEl.style.zIndex = '';
+      }
+    }
+    selectedCards[slotIndex] = card;
+  }
+
+  cardEl.classList.add('selected');
+  cardEl.classList.remove('dragging', 'hover-over-slot');
+  cardEl.style.zIndex = '';
+
+  updateSelectionUI();
+  updateSelectionSlots();
+}
+
+function updateSelectionUI() {
+  const maxCards = getMaxCards();
+  document.getElementById('selection-count').textContent = `已选 ${selectedCards.length} / ${maxCards} 张`;
+  const drawBtn = document.getElementById('draw-btn');
+  if (selectedCards.length === maxCards) {
+    drawBtn.style.opacity = '1';
+    drawBtn.style.pointerEvents = 'auto';
+    drawBtn.classList.add('glow-pulse');
+  } else {
+    drawBtn.style.opacity = '0.5';
+    drawBtn.style.pointerEvents = 'none';
+    drawBtn.classList.remove('glow-pulse');
+  }
+}
+
+function updateSelectionSlots() {
+  const slotsContainer = document.getElementById('selection-slots');
+  const maxCards = getMaxCards();
+  slotsContainer.innerHTML = '';
+
+  for (let i = 0; i < maxCards; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'selected-slot w-16 h-24 sm:w-20 sm:h-28 rounded-xl flex items-center justify-center';
+    slot.style.background = 'rgba(37, 37, 56, 0.5)';
+    slot.style.border = '2px dashed rgba(201, 169, 110, 0.25)';
+    slot.style.transition = 'all 0.3s ease';
+
+    if (i < selectedCards.length) {
+      const card = selectedCards[i];
+      const elementColor = elementColors[card.element] || '#C9A96E';
+      slot.classList.add('filled');
+      slot.style.border = `2px solid ${elementColor}80`;
+      slot.style.background = `linear-gradient(145deg, rgba(40, 40, 60, 0.95), rgba(30, 30, 50, 0.95))`;
+      slot.style.boxShadow = `0 4px 25px ${elementColor}40, inset 0 0 20px ${elementColor}10`;
+      slot.innerHTML = `
+        <div class="text-center">
+          <div class="text-2xl mb-1" style="color: ${elementColor};">${elementIcons[card.element] || ''}</div>
+          <div class="text-xs font-semibold" style="color: #E2CFA0; font-family: 'Noto Serif SC', serif;">${card.name}</div>
+        </div>`;
+    } else {
+      slot.innerHTML = `
+        <div class="text-center opacity-50">
+          <div class="text-2xl mb-1" style="color: #C9A96E;">✦</div>
+          <div class="text-xs" style="color: #8A8278; font-family: 'Noto Sans SC', sans-serif;">${positionNames[currentSpread][i] || ''}</div>
+        </div>`;
+    }
+    slotsContainer.appendChild(slot);
+  }
+}
+
+function selectSpread(spread) {
+  currentSpread = spread;
+  document.querySelectorAll('.spread-card').forEach(function(card) {
+    card.classList.remove('active');
+    card.style.border = '1px solid rgba(201, 169, 110, 0.15)';
+    card.style.boxShadow = 'none';
+  });
+  const selectedCard = document.querySelector('.spread-card[data-spread="' + spread + '"]');
+  if (selectedCard) {
+    selectedCard.classList.add('active');
+    selectedCard.style.border = '2px solid rgba(201, 169, 110, 0.6)';
+    selectedCard.style.boxShadow = '0 0 30px rgba(201, 169, 110, 0.2)';
+  }
+  const titles = {
+    single: { title: '请拖拽一张牌到下方', desc: '将卡牌拖拽到选择槽位中' },
+    three: { title: '请拖拽三张牌到下方', desc: '将卡牌拖拽到选择槽位中' },
+    celtic: { title: '请拖拽十张牌到下方', desc: '将卡牌拖拽到选择槽位中' }
+  };
+  document.getElementById('selection-title').textContent = titles[spread].title;
+  document.getElementById('selection-desc').textContent = titles[spread].desc;
+  resetSelection();
+  document.getElementById('reading-result').style.display = 'none';
+}
+
+function resetSelection() {
+  selectedCards = [];
+  deckCards = shuffleArray([...tarotCards]);
+  initDeck(false);
+  updateSelectionUI();
+  updateSelectionSlots();
+}
+
+function drawCards() {
+  const maxCards = getMaxCards();
+  if (selectedCards.length < maxCards) return;
+  isAnimating = true;
+
+  const resultSection = document.getElementById('reading-result');
+  resultSection.style.display = 'block';
+  const subtitles = {
+    single: '单牌占卜 · 今日指引',
+    three: '三牌阵 · 过去 · 现在 · 未来',
+    celtic: '凯尔特十字 · 深度全面解读'
+  };
+  document.getElementById('result-subtitle').textContent = subtitles[currentSpread];
+
+  const resultCards = document.getElementById('result-cards');
+  resultCards.innerHTML = '';
+
+  const positions = positionNames[currentSpread];
+  const displayCount = currentSpread === 'celtic' ? 10 : (currentSpread === 'single' ? 1 : 3);
+  const gridCols = currentSpread === 'single' ? 'grid-cols-1 max-w-sm mx-auto' :
+                   (currentSpread === 'three' ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2 sm:grid-cols-5');
+  resultCards.className = `grid ${gridCols} gap-4 sm:gap-6 mb-12`;
+
+  for (let i = 0; i < displayCount && i < selectedCards.length; i++) {
+    const card = selectedCards[i];
+    const position = positions[i];
+    const elementColor = elementColors[card.element] || '#C9A96E';
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'glass-panel rounded-xl p-5 sm:p-6 text-center deal-animation';
+    cardDiv.style.border = `1px solid ${elementColor}33`;
+    cardDiv.style.animationDelay = (i * 0.15) + 's';
+
+    const suitSymbol = card.suit ? (suitSymbols[card.suit] || '') : '';
+    const elementIcon = elementIcons[card.element] || '';
+    const cardType = card.type === 'major' ? '大阿卡纳' : `小阿卡纳 · ${getSuitName(card.suit)}`;
+
+    cardDiv.innerHTML = `
+      <div class="text-xs font-semibold uppercase tracking-widest mb-4" style="color: #C9A96E; letter-spacing: 0.1em; font-family: 'Noto Sans SC', sans-serif;">${position}</div>
+      <div class="card-flip-container w-24 h-36 mx-auto mb-4">
+        <div class="card-flip-inner" id="flip-${i}">
+          <div class="card-back rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #252538 0%, #1E1E2E 100%); border: 1px solid rgba(201, 169, 110, 0.3);">${getCardPattern(i)}</div>
+          <div class="card-front rounded-lg flex flex-col items-center justify-center p-3" style="background: linear-gradient(180deg, #252538 0%, #1E1E2E 100%); border: 1px solid ${elementColor}50;">
+            <div class="text-4xl mb-2" style="color: ${elementColor};">${elementIcon}${suitSymbol}</div>
+            <div class="text-xs text-center font-display" style="color: ${elementColor}; font-size: 10px; font-family: 'Noto Serif SC', serif;">${card.name}</div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-2 mb-2">
+        <span class="text-xs px-2 py-0.5 rounded-full" style="background: ${elementColor}20; color: ${elementColor}; border: 1px solid ${elementColor}30; font-family: 'Noto Sans SC', sans-serif;">${card.element}元素</span>
+        <span class="text-xs px-2 py-0.5 rounded-full" style="background: rgba(201, 169, 110, 0.1); color: #C9A96E; border: 1px solid rgba(201, 169, 110, 0.2); font-family: 'Noto Sans SC', sans-serif;">${cardType}</span>
+      </div>
+      <h3 class="text-lg font-semibold mb-1" style="color: #E2CFA0; font-family: 'Noto Serif SC', serif;">${card.name}</h3>
+      <p class="text-xs mb-2" style="color: #8A8278; font-family: 'Noto Sans SC', sans-serif;">${card.nameEn}</p>
+      <p class="text-xs font-medium mb-3" style="color: ${elementColor}; font-family: 'Noto Sans SC', sans-serif;">关键词：${card.meaning}</p>
+      <p class="text-sm leading-relaxed" style="color: #B8B0A0; font-family: 'Noto Sans SC', sans-serif;">${card.desc}</p>`;
+    resultCards.appendChild(cardDiv);
+  }
+
+  generateComprehensiveReading();
+  setTimeout(function() { resultSection.classList.add('show'); }, 100);
+  resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  setTimeout(function() {
+    for (let i = 0; i < displayCount; i++) {
+      setTimeout(function(idx) {
+        const flipEl = document.getElementById('flip-' + idx);
+        if (flipEl) flipEl.classList.add('flipped');
+      }, i * 400, i);
+    }
+  }, 600);
+
+  setTimeout(function() { isAnimating = false; }, 1500);
+}
+
+function getSuitName(suit) {
+  const names = { 'swords': '宝剑', 'cups': '圣杯', 'wands': '权杖', 'pentacles': '星币' };
+  return names[suit] || '';
+}
+
+function generateComprehensiveReading() {
+  const elements = selectedCards.map(c => c.element);
+  const elementCounts = {};
+  elements.forEach(e => { elementCounts[e] = (elementCounts[e] || 0) + 1; });
+
+  let elementAnalysis = '';
+  const elementKeys = Object.keys(elementCounts);
+  if (elementKeys.length > 0) {
+    elementAnalysis = '【元素分析】';
+    elementKeys.forEach(key => {
+      const count = elementCounts[key];
+      const icon = elementIcons[key];
+      let meaning = '';
+      switch(key) {
+        case '火': meaning = '热情、行动力、创造力'; break;
+        case '水': meaning = '情感、直觉、治愈'; break;
+        case '风': meaning = '思维、沟通、变化'; break;
+        case '土': meaning = '稳定、物质、安全感'; break;
+      }
+      elementAnalysis += `${icon}${key}元素(${count}张)：${meaning}；`;
+    });
+  }
+
+  let readingText = '';
+  if (currentSpread === 'single') {
+    readingText = `您抽到的是${selectedCards[0].name}牌。${elementAnalysis}${selectedCards[0].meaning}。${selectedCards[0].desc}建议您在这段时期保持觉察，跟随直觉指引。`;
+  }
+  else if (currentSpread === 'three') {
+    readingText = `从${selectedCards[0].name}（过去）到${selectedCards[1].name}（现在）再到${selectedCards[2].name}（未来），您的牌面呈现出一段完整的生命旅程。${elementAnalysis}综合来看，这段旅程是${getOverallTheme(selectedCards)}。`;
+  }
+  else {
+    readingText = `凯尔特十字牌阵为您揭示了生命的深层图景。${elementAnalysis}这是一个深度内省与成长的时期，${getOverallTheme(selectedCards)}。`;
+  }
+  document.getElementById('comprehensive-reading').textContent = readingText;
+}
+
+function getOverallTheme(cards) {
+  const majorCount = cards.filter(c => c.type === 'major').length;
+  const minorCount = cards.filter(c => c.type === 'minor').length;
+  if (majorCount >= 2) return '一段充满转变和重要启示的时期';
+  else if (minorCount >= cards.length - 1) return '一段关注日常生活和实际事务的时期';
+  const elements = cards.map(c => c.element);
+  if (elements.includes('火') && elements.includes('风')) return '充满行动力和创新思维的时期';
+  if (elements.includes('水') && elements.includes('土')) return '情感与物质都将得到滋养的时期';
+  if (elements.includes('火') && elements.includes('土')) return '将热情转化为实际成果的时期';
+  if (elements.includes('风') && elements.includes('水')) return '思维与情感相互融合的时期';
+  return '需要您特别关注内心感受的时期';
+}
+
+function resetAll() {
+  selectedCards = [];
+  deckCards = [];
+  initDeck(false);
+  updateSelectionUI();
+  updateSelectionSlots();
+  document.getElementById('reading-result').style.display = 'none';
+  document.getElementById('reading-result').classList.remove('show');
+  document.getElementById('card-selection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  isAnimating = false;
+}
+
+window.addEventListener('resize', function() {
+  if (!isShuffling && !isAnimating) {
+    initDeck(false);
+  }
+});
+
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileNav = document.getElementById('mobile-nav');
+let menuOpen = false;
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener('click', function() {
+    menuOpen = !menuOpen;
+    if (menuOpen) {
+      mobileNav.style.maxHeight = '300px';
+    } else {
+      mobileNav.style.maxHeight = '0';
+    }
+  });
+}
+
+const header = document.getElementById('main-header');
+if (header) {
+  window.addEventListener('scroll', function() {
+    header.style.background = window.scrollY > 50 ? 'rgba(13, 13, 20, 0.95)' : 'rgba(13, 13, 20, 0.6)';
+    header.style.borderColor = window.scrollY > 50 ? 'rgba(201, 169, 110, 0.15)' : 'transparent';
+  });
+}
+
+const particlesContainer = document.getElementById('particles');
+if (particlesContainer) {
+  for (let i = 0; i < 15; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 8 + 's';
+    particle.style.animationDuration = (6 + Math.random() * 6) + 's';
+    const size = 2 + Math.random() * 4;
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    particlesContainer.appendChild(particle);
+  }
+}
+
+const observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.fade-in').forEach(function(el) { observer.observe(el); });
+
+initDeck(false);
+updateSelectionSlots();
+lucide.createIcons();
+</script>
+
+</body>
+</html>

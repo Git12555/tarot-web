@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>八字测算 - 天机阁</title>
+    <meta name="description" content="探索您的生命密码，洞悉运势起伏与人生格局">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <style>
+:root {
+  --color-primary: #C9A96E;
+  --color-primary-light: #E2CFA0;
+  --color-primary-dark: #A68B4B;
+  --bg-primary: #0D0D14;
+  --bg-secondary: #161622;
+  --bg-tertiary: #1E1E2E;
+  --bg-elevated: #252538;
+  --text-primary: #F5F0E8;
+  --text-secondary: #B8B0A0;
+  --text-tertiary: #8A8278;
+  --text-accent: #C9A96E;
+  --border-default: rgba(201, 169, 110, 0.15);
+  --border-hover: rgba(201, 169, 110, 0.3);
+  --shadow-glow: 0 0 20px rgba(201, 169, 110, 0.15);
+  --font-display: 'Playfair Display', 'Noto Serif SC', 'Georgia', serif;
+  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+.font-display { font-family: var(--font-display); }
+.font-body { font-family: var(--font-body); }
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--color-primary-200), var(--color-primary-400), var(--color-primary-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.glass-panel {
+  background: rgba(26, 26, 42, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.mystical-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary-400), transparent);
+  opacity: 0.3;
+}
+html { scroll-behavior: smooth; }
+.fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(90deg, var(--color-primary-200), var(--color-primary-400), var(--color-primary-200));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary-400), transparent);
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after, .nav-link.active::after { width: 100%; }
+.particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.particle { position: absolute; width: 4px; height: 4px; background: rgba(201, 169, 110, 0.4); border-radius: 50%; animation: particleFloat 8s infinite ease-in-out; }
+@keyframes particleFloat {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.float-animation { animation: float 3s ease-in-out infinite; }
+.bazi-pillar {
+  transition: all 0.3s ease;
+}
+.bazi-pillar:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(201, 169, 110, 0.2);
+}
+.element-wood { color: #4ADE80; }
+.element-fire { color: #F87171; }
+.element-earth { color: #EAB308; }
+.element-metal { color: #94A3B8; }
+.element-water { color: #60A5FA; }
+.bg-element-wood { background: rgba(74, 222, 128, 0.15); border-color: rgba(74, 222, 128, 0.4); }
+.bg-element-fire { background: rgba(248, 113, 113, 0.15); border-color: rgba(248, 113, 113, 0.4); }
+.bg-element-earth { background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.4); }
+.bg-element-metal { background: rgba(148, 163, 184, 0.15); border-color: rgba(148, 163, 184, 0.4); }
+.bg-element-water { background: rgba(96, 165, 250, 0.15); border-color: rgba(96, 165, 250, 0.4); }
+input[type="date"], input[type="time"], select {
+  background: rgba(30, 30, 46, 0.8);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  color: #F5F0E8;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+input[type="date"]:focus, input[type="time"]:focus, select:focus {
+  border-color: rgba(201, 169, 110, 0.6);
+  box-shadow: 0 0 20px rgba(201, 169, 110, 0.2);
+}
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7) sepia(0.3) hue-rotate(10deg);
+  cursor: pointer;
+}
+.result-fade { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.result-fade.show { opacity: 1; transform: translateY(0); }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen font-sans antialiased" style="background: #0D0D14; color: #F5F0E8;">
+
+<header id="main-header" class="fixed top-0 left-0 right-0 z-[200] border-b transition-all duration-300" style="background: rgba(13, 13, 20, 0.6); backdrop-filter: blur(12px); border-color: transparent;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <a href="index.html" class="flex items-center gap-2 no-underline" style="text-decoration: none;">
+      <span class="font-display text-xl tracking-wide" style="font-family: 'Playfair Display', serif; color: #C9A96E; letter-spacing: 0.05em;">天机阁</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8">
+      <a href="index.html" class="nav-link text-sm font-medium transition-colors duration-250" style="color: #B8B0A0; text-decoration: none;">首页</a>
+      <a href="bazi.html" class="nav-link text-sm font-medium transition-colors duration-250 active" style="color: #C9A96E; text-decoration: none;">八字测算</a>
+      <a href="zodiac.html" class="nav-link text-sm font-medium transition-colors duration-250" style="color: #B8B0A0; text-decoration: none;">星座运势</a>
+      <a href="tarot.html" class="nav-link text-sm font-medium transition-colors duration-250" style="color: #B8B0A0; text-decoration: none;">塔罗占卜</a>
+    </nav>
+    <button id="mobile-menu-btn" class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5" style="background: none; border: none; cursor: pointer;">
+      <span class="block w-5 h-0.5 transition-all duration-300" style="background: #C9A96E;"></span>
+      <span class="block w-5 h-0.5 transition-all duration-300" style="background: #C9A96E;"></span>
+      <span class="block w-5 h-0.5 transition-all duration-300" style="background: #C9A96E;"></span>
+    </button>
+  </div>
+  <nav id="mobile-nav" class="md:hidden overflow-hidden" style="max-height: 0; transition: max-height 400ms ease;">
+    <div class="px-6 pb-4 flex flex-col gap-3">
+      <a href="index.html" class="text-sm font-medium py-2" style="color: #B8B0A0; text-decoration: none;">首页</a>
+      <a href="bazi.html" class="text-sm font-medium py-2" style="color: #C9A96E; text-decoration: none;">八字测算</a>
+      <a href="zodiac.html" class="text-sm font-medium py-2" style="color: #B8B0A0; text-decoration: none;">星座运势</a>
+      <a href="tarot.html" class="text-sm font-medium py-2" style="color: #B8B0A0; text-decoration: none;">塔罗占卜</a>
+    </div>
+  </nav>
+</header>
+
+<main class="pt-16 min-h-screen">
+  <section class="relative w-full py-20 sm:py-28 flex items-center justify-center overflow-hidden" style="background: #0D0D14;">
+    <div class="particles" id="particles"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full" style="background: radial-gradient(circle, rgba(201, 169, 110, 0.08) 0%, transparent 70%);"></div>
+    <div class="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
+      <h1 class="shimmer-text font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-6" style="font-family: 'Playfair Display', serif;">
+        八字测算
+      </h1>
+      <p class="text-base sm:text-lg leading-relaxed mb-8 max-w-2xl mx-auto" style="color: #B8B0A0;">
+        探索您的生命密码，洞悉运势起伏与人生格局
+      </p>
+      <div class="mystical-divider mx-auto" style="max-width: 120px; height: 1px; background: linear-gradient(90deg, transparent, #C9A96E, transparent); opacity: 0.5;"></div>
+    </div>
+  </section>
+
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
+    <div class="glass-panel rounded-2xl p-6 sm:p-10" style="border: 1px solid rgba(201, 169, 110, 0.2);">
+      <h2 class="text-2xl font-semibold text-center mb-8" style="color: #E2CFA0; font-family: 'Noto Serif SC', serif;">输入您的出生信息</h2>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+        <div>
+          <label class="block text-sm mb-2" style="color: #B8B0A0; font-family: 'Noto Sans SC', sans-serif;">出生日期</label>
+          <input type="date" id="birth-date" class="w-full">
+        </div>
+        <div>
+          <label class="block text-sm mb-2" style="color: #B8B0A0; font-family: 'Noto Sans SC', sans-serif;">出生时间</label>
+          <input type="time" id="birth-time" class="w-full" value="12:00">
+        </div>
+        <div>
+          <label class="block text-sm mb-2" style="color: #B8B0A0; font-family: 'Noto Sans SC', sans-serif;">性别</label>
+          <select id="gender" class="w-full">
+            <option value="male">男</option>
+            <option value="female">女</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm mb-2" style="color: #B8B0A0; font-family: 'Noto Sans SC', sans-serif;">出生地区</label>
+          <select id="location" class="w-full">
+            <option value="beijing">北京</option>
+            <option value="shanghai">上海</option>
+            <option value="guangzhou">广州</option>
+            <option value="shenzhen">深圳</option>
+            <option value="chengdu">成都</option>
+            <option value="hangzhou">杭州</option>
+            <option value="wuhan">武汉</option>
+            <option value="xian">西安</option>
+            <option value="nanjing">南京</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button onclick="calculateBazi()" class="px-10 py-4 rounded-full text-base font-semibold transition-all duration-300" style="background: linear-gradient(135deg, #C9A96E, #A68B4B); color: #1A1A0E; border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(201,169,110,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 30px rgba(201,169,110,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 20px rgba(201,169,110,0.3)';">
+          开始测算
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="bazi-result" class="relative py-16 md:py-24 px-4 sm:px-6 result-fade" style="display: none;">
+    <div class="absolute inset-0" style="background: linear-gradient(180deg, #0D0D14 0%, #161622 50%, #0D0D14 100%);"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full" style="background: radial-gradient(circle, rgba(201, 169, 110, 0.08) 0%, transparent 70%);"></div>
+    <div class="relative z-10 max-w-5xl mx-auto">
+      <h2 class="text-gradient-gold font-display text-2xl md:text-3xl font-semibold text-center mb-4" style="font-family: 'Playfair Display', serif;">您的八字命盘</h2>
+      <p class="text-center text-sm mb-12" style="color: #B8B0A0;">根据您的出生信息排盘</p>
+
+      <div class="grid grid-cols-4 gap-3 sm:gap-6 mb-12" id="bazi-pillars">
+      </div>
+
+      <div class="glass-panel rounded-xl p-6 sm:p-8 md:p-10 mb-10" style="border: 1px solid rgba(201, 169, 110, 0.25);">
+        <h3 class="text-gradient-gold font-display text-xl font-semibold mb-6 text-center" style="font-family: 'Playfair Display', serif;">五行分析</h3>
+        <div id="wuxing-analysis" class="space-y-4">
+        </div>
+      </div>
+
+      <div class="glass-panel rounded-xl p-6 sm:p-8 md:p-10 mb-10" style="border: 1px solid rgba(201, 169, 110, 0.25);">
+        <h3 class="text-gradient-gold font-display text-xl font-semibold mb-6 text-center" style="font-family: 'Playfair Display', serif;">命局解读</h3>
+        <p id="bazi-reading" class="text-base leading-relaxed text-center max-w-3xl mx-auto" style="color: #B8B0A0;"></p>
+      </div>
+
+      <div class="text-center">
+        <button onclick="resetBazi()" class="px-10 py-4 rounded-full text-base font-semibold transition-all duration-300" style="background: linear-gradient(135deg, #C9A96E, #A68B4B); color: #1A1A0E; border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(201,169,110,0.3);">再测一次</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer style="background: #0D0D14; border-top: 1px solid rgba(201, 169, 110, 0.15);">
+  <div class="mystical-divider" style="height: 1px; background: linear-gradient(90deg, transparent, #C9A96E, transparent); opacity: 0.3;"></div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-xs" style="color: #8A8278;">&copy; 2026 天机阁 TianJiGe. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="text-xs" style="color: #8A8278; text-decoration: none;">首页</a>
+        <span style="color: rgba(201, 169, 110, 0.15);">|</span>
+        <a href="tarot.html" class="text-xs" style="color: #8A8278; text-decoration: none;">塔罗占卜</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const tianGan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+const diZhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+
+const tianGanElement = { '甲': '木', '乙': '木', '丙': '火', '丁': '火', '戊': '土', '己': '土', '庚': '金', '辛': '金', '壬': '水', '癸': '水' };
+const diZhiElement = { '子': '水', '丑': '土', '寅': '木', '卯': '木', '辰': '土', '巳': '火', '午': '火', '未': '土', '申': '金', '酉': '金', '戌': '土', '亥': '水' };
+
+const elementIcons = { '木': '🌲', '火': '🔥', '土': '⛰️', '金': '⚔️', '水': '💧' };
+const elementNames = { '木': 'wood', '火': 'fire', '土': 'earth', '金': 'metal', '水': 'water' };
+
+const zodiacAnimals = { '子': '鼠', '丑': '牛', '寅': '虎', '卯': '兔', '辰': '龙', '巳': '蛇', '午': '马', '未': '羊', '申': '猴', '酉': '鸡', '戌': '狗', '亥': '猪' };
+
+function getYearGanZhi(year) {
+  const ganIndex = (year - 4) % 10;
+  const zhiIndex = (year - 4) % 12;
+  return { gan: tianGan[ganIndex], zhi: diZhi[zhiIndex] };
+}
+
+function getMonthGanZhi(year, month) {
+  const yearGan = tianGan.indexOf(getYearGanZhi(year).gan);
+  const monthZhiIndex = (month + 1) % 12;
+  let monthGanIndex;
+  
+  if (yearGan % 5 === 0 || yearGan % 5 === 4) {
+    monthGanIndex = (2 + month - 1) % 10;
+  } else if (yearGan % 5 === 1 || yearGan % 5 === 5) {
+    monthGanIndex = (4 + month - 1) % 10;
+  } else if (yearGan % 5 === 2 || yearGan % 5 === 6) {
+    monthGanIndex = (6 + month - 1) % 10;
+  } else if (yearGan % 5 === 3 || yearGan % 5 === 7) {
+    monthGanIndex = (8 + month - 1) % 10;
+  } else {
+    monthGanIndex = (0 + month - 1) % 10;
+  }
+  
+  return { gan: tianGan[monthGanIndex], zhi: diZhi[monthZhiIndex] };
+}
+
+function getDayGanZhi(year, month, day) {
+  const baseDate = new Date(1900, 0, 1);
+  const targetDate = new Date(year, month - 1, day);
+  const diffDays = Math.floor((targetDate - baseDate) / (1000 * 60 * 60 * 24));
+  const ganIndex = (diffDays + 9) % 10;
+  const zhiIndex = (diffDays + 1) % 12;
+  return { gan: tianGan[ganIndex], zhi: diZhi[zhiIndex] };
+}
+
+function getHourGanZhi(dayGan, hour) {
+  const dayGanIndex = tianGan.indexOf(dayGan);
+  let hourZhiIndex;
+  
+  if (hour >= 23 || hour < 1) hourZhiIndex = 0;
+  else if (hour >= 1 && hour < 3) hourZhiIndex = 1;
+  else if (hour >= 3 && hour < 5) hourZhiIndex = 2;
+  else if (hour >= 5 && hour < 7) hourZhiIndex = 3;
+  else if (hour >= 7 && hour < 9) hourZhiIndex = 4;
+  else if (hour >= 9 && hour < 11) hourZhiIndex = 5;
+  else if (hour >= 11 && hour < 13) hourZhiIndex = 6;
+  else if (hour >= 13 && hour < 15) hourZhiIndex = 7;
+  else if (hour >= 15 && hour < 17) hourZhiIndex = 8;
+  else if (hour >= 17 && hour < 19) hourZhiIndex = 9;
+  else if (hour >= 19 && hour < 21) hourZhiIndex = 10;
+  else hourZhiIndex = 11;
+  
+  let hourGanIndex;
+  if (dayGanIndex % 5 === 0 || dayGanIndex % 5 === 4) {
+    hourGanIndex = hourZhiIndex;
+  } else if (dayGanIndex % 5 === 1 || dayGanIndex % 5 === 5) {
+    hourGanIndex = (hourZhiIndex + 2) % 10;
+  } else if (dayGanIndex % 5 === 2 || dayGanIndex % 5 === 6) {
+    hourGanIndex = (hourZhiIndex + 4) % 10;
+  } else if (dayGanIndex % 5 === 3 || dayGanIndex % 5 === 7) {
+    hourGanIndex = (hourZhiIndex + 6) % 10;
+  } else {
+    hourGanIndex = (hourZhiIndex + 8) % 10;
+  }
+  
+  return { gan: tianGan[hourGanIndex], zhi: diZhi[hourZhiIndex] };
+}
+
+function calculateBazi() {
+  const dateInput = document.getElementById('birth-date').value;
+  const timeInput = document.getElementById('birth-time').value;
+  const gender = document.getElementById('gender').value;
+  
+  if (!dateInput) {
+    alert('请选择出生日期');
+    return;
+  }
+  
+  const date = new Date(dateInput);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  
+  const hour = timeInput ? parseInt(timeInput.split(':')[0]) : 12;
+  
+  const yearPillar = getYearGanZhi(year);
+  const monthPillar = getMonthGanZhi(year, month);
+  const dayPillar = getDayGanZhi(year, month, day);
+  const hourPillar = getHourGanZhi(dayPillar.gan, hour);
+  
+  const pillars = [
+    { name: '年柱', ...yearPillar, animal: zodiacAnimals[yearPillar.zhi] },
+    { name: '月柱', ...monthPillar },
+    { name: '日柱', ...dayPillar, isDayMaster: true },
+    { name: '时柱', ...hourPillar }
+  ];
+  
+  renderPillars(pillars);
+  renderWuxingAnalysis(pillars);
+  renderBaziReading(pillars, gender);
+  
+  const resultSection = document.getElementById('bazi-result');
+  resultSection.style.display = 'block';
+  setTimeout(() => resultSection.classList.add('show'), 100);
+  resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderPillars(pillars) {
+  const container = document.getElementById('bazi-pillars');
+  container.innerHTML = '';
+  
+  pillars.forEach((pillar, index) => {
+    const ganElement = tianGanElement[pillar.gan];
+    const zhiElement = diZhiElement[pillar.zhi];
+    const ganElementClass = elementNames[ganElement];
+    const zhiElementClass = elementNames[zhiElement];
+    
+    const pillarDiv = document.createElement('div');
+    pillarDiv.className = 'bazi-pillar glass-panel rounded-xl p-4 sm:p-6 text-center';
+    pillarDiv.style.border = `1px solid rgba(201, 169, 110, 0.2)`;
+    pillarDiv.style.animationDelay = (index * 0.15) + 's';
+    pillarDiv.style.opacity = '0';
+    pillarDiv.style.animation = `dealCard 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.15}s forwards`;
+    
+    pillarDiv.innerHTML = `
+      <div class="text-xs mb-3" style="color: #8A8278; font-family: 'Noto Sans SC', sans-serif;">${pillar.name}</div>
+      <div class="bg-element-${ganElementClass} rounded-lg p-3 mb-2 border">
+        <div class="text-3xl sm:text-4xl font-bold element-${ganElementClass}" style="font-family: 'Noto Serif SC', serif;">${pillar.gan}</div>
+        <div class="text-xs mt-1 element-${ganElementClass}" style="font-family: 'Noto Sans SC', sans-serif;">${elementIcons[ganElement]} ${ganElement}</div>
+      </div>
+      <div class="bg-element-${zhiElementClass} rounded-lg p-3 border">
+        <div class="text-3xl sm:text-4xl font-bold element-${zhiElementClass}" style="font-family: 'Noto Serif SC', serif;">${pillar.zhi}</div>
+        <div class="text-xs mt-1 element-${zhiElementClass}" style="font-family: 'Noto Sans SC', sans-serif;">
+          ${pillar.animal ? elementIcons[zhiElement] + ' ' + pillar.animal : elementIcons[zhiElement] + ' ' + zhiElement}
+        </div>
+      </div>
+      ${pillar.isDayMaster ? '<div class="text-xs mt-3 px-2 py-1 rounded-full inline-block" style="background: rgba(201, 169, 110, 0.2); color: #C9A96E;">日主</div>' : ''}
+    `;
+    
+    container.appendChild(pillarDiv);
+  });
+}
+
+function renderWuxingAnalysis(pillars) {
+  const counts = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
+  
+  pillars.forEach(pillar => {
+    counts[tianGanElement[pillar.gan]]++;
+    counts[diZhiElement[pillar.zhi]]++;
+  });
+  
+  const total = 8;
+  const container = document.getElementById('wuxing-analysis');
+  container.innerHTML = '';
+  
+  Object.keys(counts).forEach(element => {
+    const count = counts[element];
+    const percentage = (count / total) * 100;
+    const elementClass = elementNames[element];
+    
+    const row = document.createElement('div');
+    row.innerHTML = `
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm element-${elementClass}" style="font-family: 'Noto Sans SC', sans-serif;">${elementIcons[element]} ${element}元素</span>
+        <span class="text-sm" style="color: #B8B0A0; font-family: 'Noto Sans SC', sans-serif;">${count} / ${total}</span>
+      </div>
+      <div class="w-full h-2 rounded-full" style="background: rgba(255, 255, 255, 0.1);">
+        <div class="h-full rounded-full transition-all duration-1000" style="width: ${percentage}%; background: ${getElementColor(element)}; box-shadow: 0 0 10px ${getElementColor(element)}60;"></div>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function getElementColor(element) {
+  const colors = { '木': '#4ADE80', '火': '#F87171', '土': '#EAB308', '金': '#94A3B8', '水': '#60A5FA' };
+  return colors[element] || '#C9A96E';
+}
+
+function renderBaziReading(pillars, gender) {
+  const dayMaster = tianGanElement[pillars[2].gan];
+  const dayMasterGan = pillars[2].gan;
+  
+  const counts = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
+  pillars.forEach(pillar => {
+    counts[tianGanElement[pillar.gan]]++;
+    counts[diZhiElement[pillar.zhi]]++;
+  });
+  
+  let mostElement = '木';
+  let mostCount = 0;
+  let leastElement = '木';
+  let leastCount = 10;
+  
+  Object.keys(counts).forEach(e => {
+    if (counts[e] > mostCount) { mostCount = counts[e]; mostElement = e; }
+    if (counts[e] < leastCount) { leastCount = counts[e]; leastElement = e; }
+  });
+  
+  const readings = {
+    '木': {
+      strong: '您的日主为木，命局中木气旺盛。您天生具有仁慈、正直的品格，富有同情心和正义感。性格坚韧不拔，如参天大树般向上生长。适合从事教育、文化、艺术等领域。',
+      weak: '您的日主为木，命局中木气稍弱。您可能需要更多地培养自己的决断力和行动力。建议多接触大自然，佩戴绿色饰品，以增强木元素的能量。'
+    },
+    '火': {
+      strong: '您的日主为火，命局中火气旺盛。您热情开朗，富有感染力和领导力。思维敏捷，行动力强，如烈火般充满活力。适合从事管理、娱乐、销售等领域。',
+      weak: '您的日主为火，命局中火气稍弱。您可能需要更多地培养自己的热情和表达能力。建议多参加社交活动，佩戴红色饰品，以增强火元素的能量。'
+    },
+    '土': {
+      strong: '您的日主为土，命局中土气旺盛。您诚实守信，踏实稳重，有强烈的责任感和担当精神。如大地般承载万物，值得信赖。适合从事金融、建筑、农业等领域。',
+      weak: '您的日主为土，命局中土气稍弱。您可能需要更多地培养自己的稳定性和耐心。建议多接触大地，佩戴黄色饰品，以增强土元素的能量。'
+    },
+    '金': {
+      strong: '您的日主为金，命局中金气旺盛。您坚毅果断，讲义气，有强烈的原则和底线。如金属般锐利而坚韧，追求完美。适合从事金融、法律、科技等领域。',
+      weak: '您的日主为金，命局中金气稍弱。您可能需要更多地培养自己的决断力和原则性。建议多接触金属饰品，佩戴白色或金色饰品，以增强金元素的能量。'
+    },
+    '水': {
+      strong: '您的日主为水，命局中水气旺盛。您聪慧灵敏，善于变通，有很强的适应能力和直觉力。如流水般灵动，能够顺势而为。适合从事咨询、策划、贸易等领域。',
+      weak: '您的日主为水，命局中水气稍弱。您可能需要更多地培养自己的灵活性和沟通能力。建议多接触水，佩戴黑色或蓝色饰品，以增强水元素的能量。'
+    }
+  };
+  
+  const isStrong = counts[dayMaster] >= 3;
+  const baseReading = readings[dayMaster][isStrong ? 'strong' : 'weak'];
+  
+  const zodiac = zodiacAnimals[pillars[0].zhi];
+  const fullReading = `${baseReading}
+
+您出生于${pillars[0].gan}${pillars[0].zhi}年（${zodiac}年），生肖属${zodiac}。
+命局中${mostElement}元素最旺（${mostCount}个），代表您在${getElementTrait(mostElement)}方面有突出的天赋。
+${leastElement}元素相对较弱（${leastCount}个），可以在生活中适当补充${leastElement}元素的能量。
+
+${gender === 'male' ? '男命以正财为妻，偏财为父。' : '女命以正官为夫，七杀为情人。'}
+${dayMasterGan}日主的人，性格中带有${getDayMasterTrait(dayMasterGan)}的特质。`;
+  
+  document.getElementById('bazi-reading').innerText = fullReading;
+}
+
+function getElementTrait(element) {
+  const traits = {
+    '木': '创造力、领导力、仁慈',
+    '火': '热情、表达、社交',
+    '土': '稳重、务实、可靠',
+    '金': '坚毅、公正、严谨',
+    '水': '智慧、灵活、直觉'
+  };
+  return traits[element] || '';
+}
+
+function getDayMasterTrait(gan) {
+  const traits = {
+    '甲': '正直、进取、有领导力',
+    '乙': '温柔、灵活、善于协调',
+    '丙': '热情、开朗、有感染力',
+    '丁': '细腻、专注、有恒心',
+    '戊': '稳重、诚信、有担当',
+    '己': '包容、务实、善谋划',
+    '庚': '刚毅、果断、讲义气',
+    '辛': '精致、严谨、有品味',
+    '壬': '聪慧、灵活、有谋略',
+    '癸': '敏感、细腻、有直觉'
+  };
+  return traits[gan] || '';
+}
+
+function resetBazi() {
+  document.getElementById('bazi-result').style.display = 'none';
+  document.getElementById('bazi-result').classList.remove('show');
+  document.querySelector('.glass-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileNav = document.getElementById('mobile-nav');
+let menuOpen = false;
+if (mobileMenuBtn) {
+  mobileMenuBtn.addEventListener('click', function() {
+    menuOpen = !menuOpen;
+    if (menuOpen) {
+      mobileNav.style.maxHeight = '300px';
+    } else {
+      mobileNav.style.maxHeight = '0';
+    }
+  });
+}
+
+const header = document.getElementById('main-header');
+if (header) {
+  window.addEventListener('scroll', function() {
+    header.style.background = window.scrollY > 50 ? 'rgba(13, 13, 20, 0.95)' : 'rgba(13, 13, 20, 0.6)';
+    header.style.borderColor = window.scrollY > 50 ? 'rgba(201, 169, 110, 0.15)' : 'transparent';
+  });
+}
+
+const particlesContainer = document.getElementById('particles');
+if (particlesContainer) {
+  for (let i = 0; i < 15; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 8 + 's';
+    particle.style.animationDuration = (6 + Math.random() * 6) + 's';
+    const size = 2 + Math.random() * 4;
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    particlesContainer.appendChild(particle);
+  }
+}
+
+const observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.fade-in').forEach(function(el) { observer.observe(el); });
+</script>
+
+</body>
+</html>
